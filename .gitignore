@@ -1,0 +1,21 @@
+# Kuku screenplays/dialogue are confidential: never commit the pack or anything derived from it.
+data/
+pack/
+*.zip
+*.txt
+!requirements.txt
+outputs/
+*.jsonl
+promos.json
+promos.csv
+PROMOS.md
+dashboard.html
+decisions*.json
+learned_weights.json
+.llm_cache/
+__pycache__/
+*.pyc
+
+# demo show is invented and safe to commit
+!examples/
+!examples/**

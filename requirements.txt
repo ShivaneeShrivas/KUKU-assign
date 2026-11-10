@@ -1,0 +1,5 @@
+# core engine needs only the standard library (Python 3.9+; TOML via tomli on <3.11)
+tomli; python_version < "3.11"
+# optional
+streamlit>=1.30      # for app.py demo
+numpy                # only for eval/checks.py convenience (not required by core)

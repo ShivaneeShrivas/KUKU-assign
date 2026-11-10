@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Promo Desk — story-aware promo intelligence</title>
+<style>
+:root{--bg:#0e0f13;--bg2:#15171d;--card:#1a1d25;--card2:#20242e;--line:#2a2e3a;--fg:#ecebe6;--mut:#9a9caa;--dim:#6c6f7d;--acc:#ff6a3d;--acc2:#ffb199;
+--ver:#35c2ad;--ai:#9a8cff;--hum:#f0b429;--heu:#8c92a3;--ok:#4cc38a;--warn:#f0b429;--bad:#ef5b5b;--shadow:0 8px 30px rgba(0,0,0,.35);--r:14px}
+[data-theme=light]{--bg:#f5f3ee;--bg2:#ece9e1;--card:#fff;--card2:#f7f5f0;--line:#e1ddd2;--fg:#1c1b19;--mut:#625f57;--dim:#8f8b80;--acc:#d9431a;--acc2:#8a2a0e;
+--ver:#0f8f7d;--ai:#5b4bd6;--hum:#a86f00;--heu:#6d7280;--ok:#1d8f5a;--warn:#a86f00;--bad:#c93a3a;--shadow:0 8px 24px rgba(40,30,10,.10)}
+*{box-sizing:border-box}html,body{margin:0}body{background:var(--bg);color:var(--fg);font:14px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Inter,Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;font-weight:600;letter-spacing:-.01em;margin:0}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px}
+button{font:inherit;color:inherit;cursor:pointer}a{color:var(--acc)}
+header.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.wrap{max-width:1360px;margin:0 auto;padding:0 20px}
+.bar{display:flex;align-items:center;gap:16px;padding:12px 0;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:10px}.brand h1{font-size:22px}.brand small{color:var(--mut)}
+.logo{width:26px;height:26px;border-radius:8px;background:conic-gradient(from 210deg,var(--acc),var(--ai),var(--ver),var(--acc));display:inline-block;align-self:center}
+nav{display:flex;gap:2px;margin-left:12px;flex-wrap:wrap}nav button{background:none;border:0;padding:8px 12px;border-radius:9px;color:var(--mut)}
+nav button.on{background:var(--card);color:var(--fg);box-shadow:inset 0 0 0 1px var(--line)}nav button:hover{color:var(--fg)}
+.right{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;padding:2px 9px;border-radius:99px;border:1px solid var(--line);color:var(--mut);background:var(--card2);white-space:nowrap}
+.chip.ver{color:var(--ver);border-color:color-mix(in srgb,var(--ver) 40%,var(--line))}.chip.ai{color:var(--ai);border-color:color-mix(in srgb,var(--ai) 40%,var(--line))}
+.chip.hum{color:var(--hum);border-color:color-mix(in srgb,var(--hum) 40%,var(--line))}.chip.heu{color:var(--heu)}
+.chip.ok{color:var(--ok)}.chip.warn{color:var(--warn)}.chip.bad{color:var(--bad)}.chip.acc{color:var(--acc)}
+.btn{background:var(--card2);border:1px solid var(--line);border-radius:9px;padding:6px 12px}.btn:hover{border-color:var(--dim)}
+.btn.pri{background:var(--acc);border-color:var(--acc);color:#fff}.btn.ok{border-color:var(--ok);color:var(--ok)}.btn.bad{border-color:var(--bad);color:var(--bad)}.btn.sm{padding:3px 9px;font-size:12px}
+.btn.on{background:color-mix(in srgb,var(--acc) 18%,var(--card2));border-color:var(--acc)}
+main{padding:22px 0 80px}section.tab{display:none}section.tab.on{display:block}
+.grid{display:grid;gap:14px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}
+@media(max-width:1000px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:1fr 1fr}}@media(max-width:640px){.g4,.g3,.g2{grid-template-columns:1fr}.wrap{padding:0 14px}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--shadow)}
+.card h3{font-size:15px;margin-bottom:10px}.sub{color:var(--mut);font-size:12.5px}
+.tile .v{font-family:"Iowan Old Style",Georgia,serif;font-size:34px;line-height:1.1;margin:6px 0 2px}.tile .l{color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:.07em}
+.hero{padding:26px 24px;border-radius:18px;background:radial-gradient(1200px 300px at 0% 0%,color-mix(in srgb,var(--acc) 22%,transparent),transparent),var(--card);border:1px solid var(--line);margin-bottom:14px}
+.hero h2{font-size:30px;max-width:820px}.hero p{color:var(--mut);max-width:780px;margin:8px 0 0}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.sp{flex:1}
+.hbar{display:grid;grid-template-columns:150px 1fr 40px;gap:8px;align-items:center;margin:5px 0;font-size:12.5px}.hbar .t{height:10px;background:var(--bg2);border-radius:99px;overflow:hidden}.hbar .t i{display:block;height:100%;border-radius:99px;background:var(--acc)}
+.mini{display:grid;grid-template-columns:62px 1fr 34px;gap:6px;align-items:center;font-size:11.5px;color:var(--mut)}.mini .t{height:6px;border-radius:9px;background:var(--bg2);overflow:hidden}.mini .t i{display:block;height:100%}
+.heat{display:grid;grid-template-columns:repeat(25,1fr);gap:4px}.heat div{aspect-ratio:1;border-radius:6px;display:grid;place-items:center;font-size:10px;color:#fff;cursor:pointer;border:1px solid transparent}.heat div:hover{border-color:var(--fg)}
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px;padding:12px;background:var(--card);border:1px solid var(--line);border-radius:var(--r)}
+input,select,textarea{background:var(--bg2);border:1px solid var(--line);color:var(--fg);border-radius:8px;padding:6px 9px;font:inherit}input[type=number]{width:70px}input[type=search]{min-width:170px}textarea{width:100%;min-height:64px}
+label.f{display:flex;flex-direction:column;gap:2px;font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.06em}
+#slots{grid-template-columns:minmax(0,1fr)}.grid>*{min-width:0}#cgrid{grid-template-columns:minmax(0,1.5fr) minmax(300px,1fr)}#cgrid>*{min-width:0}@media(max-width:1000px){#cgrid{grid-template-columns:minmax(0,1fr)}}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:14px}
+.pc{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:10px;position:relative;transition:transform .15s,border-color .15s}
+.pc:hover{transform:translateY(-2px);border-color:var(--dim)}.pc.approved{box-shadow:inset 3px 0 0 var(--ok)}.pc.rejected{opacity:.55;box-shadow:inset 3px 0 0 var(--bad)}.pc.inslate{outline:2px solid color-mix(in srgb,var(--acc) 60%,transparent)}
+.pc .hd{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.rk{font-family:Georgia,serif;font-size:22px;line-height:1}
+.gr{font-weight:700;width:24px;height:24px;border-radius:7px;display:grid;place-items:center;font-size:12px;color:#fff}.gA{background:var(--ok)}.gB{background:#d19a1f}.gC{background:var(--dim)}
+.quote{border-left:3px solid var(--line);padding:2px 0 2px 10px;color:var(--fg);font-size:13px}.quote b{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--mut);font-weight:600}
+.tl{width:100%;height:30px}.spark{width:100%;height:34px}
+.drawer{position:fixed;inset:0 0 0 auto;width:min(860px,100vw);background:var(--bg);border-left:1px solid var(--line);z-index:40;transform:translateX(102%);transition:transform .25s;overflow:auto;box-shadow:var(--shadow)}
+.drawer.on{transform:none}.scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:30;display:none}.scrim.on{display:block}
+.dh{position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--line);padding:14px 20px;z-index:2}.db{padding:16px 20px 60px}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin:10px 0 0}.tabs button{background:none;border:0;padding:6px 10px;border-radius:8px;color:var(--mut)}.tabs button.on{background:var(--card);color:var(--fg);box-shadow:inset 0 0 0 1px var(--line)}
+.tl-line{padding:3px 8px;border-radius:6px;display:grid;grid-template-columns:62px 1fr;gap:8px}.tl-line.hook{background:color-mix(in srgb,var(--acc) 16%,transparent)}.tl-line.cliff{background:color-mix(in srgb,var(--ai) 16%,transparent)}.tl-line .w{color:var(--mut)}.tl-line em{color:var(--dim);font-style:normal}
+.sep{color:var(--dim);text-align:center;margin:6px 0;font-size:12px}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--mut);font-weight:500;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em}
+.slot{border:1px dashed var(--line);border-radius:12px;padding:10px;display:flex;gap:10px;align-items:center;background:var(--card2);min-height:62px}.slot.f{border-style:solid;background:var(--card)}.slot.over{border-color:var(--acc)}
+.slot .n{font-family:Georgia,serif;font-size:22px;color:var(--dim);width:30px;text-align:center}.warnbox{border:1px solid color-mix(in srgb,var(--warn) 50%,var(--line));background:color-mix(in srgb,var(--warn) 8%,var(--card));border-radius:10px;padding:8px 12px;margin:6px 0;font-size:13px}
+.note{border:1px solid var(--line);background:var(--card2);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--mut)}.note b{color:var(--fg)}
+.legend{display:flex;gap:6px;flex-wrap:wrap}.kv{display:grid;grid-template-columns:140px 1fr;gap:4px 12px;font-size:13px}.kv dt{color:var(--mut)}.kv dd{margin:0}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--line);padding:9px 16px;border-radius:99px;box-shadow:var(--shadow);z-index:60;opacity:0;transition:opacity .2s;pointer-events:none}.toast.on{opacity:1}
+svg text{fill:var(--mut);font-size:10px}
+.stu-g{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(330px,.85fr);gap:18px;align-items:start}
+@media(max-width:960px){.stu-g{grid-template-columns:1fr}}
+.stu-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--shadow)}
+.stu-card h3{font-size:17px;margin-bottom:4px}.stu-card p.sub{color:var(--mut);margin:0 0 12px;font-size:12.5px}
+.wrow{display:grid;grid-template-columns:92px 1fr 44px;gap:10px;align-items:center;margin:5px 0}
+.wrow input[type=range]{width:100%;accent-color:var(--acc)}
+.rl{position:relative;margin-top:12px}
+.rr{position:absolute;left:0;right:0;height:42px;display:grid;grid-template-columns:34px 34px 1fr 120px 52px;gap:8px;align-items:center;padding:0 10px;border:1px solid var(--line);border-radius:10px;background:var(--card2);cursor:pointer;transition:transform .55s cubic-bezier(.2,.8,.2,1),border-color .2s,background .2s}
+.rr:hover,.rr.sel{border-color:var(--acc)}.rr.sel{background:color-mix(in srgb,var(--acc) 10%,var(--card2))}
+.rr .d{font-size:11.5px;font-weight:600}.up{color:var(--ok)}.dn{color:var(--bad)}.eq{color:var(--dim)}
+.rr .nm{display:flex;gap:7px;align-items:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.dot{width:9px;height:9px;border-radius:50%;flex:none}
+.phonewrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.phone{width:262px;height:466px;border-radius:30px;border:6px solid #000;background:linear-gradient(180deg,#14151b,#07070a);position:relative;overflow:hidden;box-shadow:0 14px 40px rgba(0,0,0,.45);flex:none}
+.phone .scr{position:absolute;inset:0;padding:42px 14px 44px;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;color:#f3f2ee}
+.phone .ln{opacity:.5;font-size:12.5px;line-height:1.35}.phone .ln.new{opacity:1;font-size:16px;font-weight:600;animation:pop .35s ease}
+.phone .ln b{display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--acc2);margin-bottom:1px}
+.phone .ln.act{font-style:italic;color:#c9c8d6;border-left:2px solid var(--ai);padding-left:8px}
+.phone .cut{font-size:10px;text-align:center;color:#8c92a3;letter-spacing:.14em}
+@keyframes pop{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}}
+.phone .badge{position:absolute;top:14px;left:14px;font-size:10.5px;font-weight:700;letter-spacing:.1em;padding:3px 9px;border-radius:99px;background:var(--acc);color:#fff;animation:pop .3s}
+.phone .badge.cl{background:var(--bad)}
+.phone .pb{position:absolute;left:12px;right:12px;bottom:16px;height:5px;border-radius:9px;background:#ffffff22;overflow:hidden}
+.phone .pb i{display:block;height:100%;background:#fff;width:0}
+.phone .pb u{position:absolute;top:0;bottom:0;background:var(--acc);opacity:.55}
+.phone .end{position:absolute;inset:0;background:#000c;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;gap:6px;animation:pop .4s}
+.phone .end big{font-family:Georgia,serif;font-size:21px}
+.know{flex:1;min-width:210px}.know h4{margin:0 0 6px;font-size:13px}
+.kc{display:inline-flex;margin:2px 3px 2px 0;padding:2px 9px;border-radius:99px;font-size:11.5px;background:color-mix(in srgb,var(--ver) 16%,var(--card2));color:var(--ver);animation:pop .3s}
+.gap{color:var(--bad);font-size:12px;margin:2px 0}
+.ctl{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 6px;justify-content:center}
+.cov{display:grid;grid-template-columns:70px repeat(9,1fr);gap:4px;align-items:center;font-size:11px;color:var(--mut);margin:4px 0}
+.cov i{height:16px;border-radius:5px;background:var(--card2);border:1px solid var(--line)}
+.kbd{font:11px ui-monospace,monospace;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:0 5px;background:var(--card2)}
+.tour{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:60;max-width:460px;background:var(--card);border:1px solid var(--acc);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow);animation:pop .4s}
+.tour p{margin:0 0 10px}.tour .r{display:flex;gap:8px;justify-content:space-between;align-items:center}
+.rr .t{height:6px;background:var(--line);border-radius:9px;overflow:hidden}.rr .t i{display:block;height:100%}.phone .ln b{color:#ffb199}</style></head>
+<body>
+<header class="top"><div class="wrap"><div class="bar">
+  <div class="brand"><span class="logo"></span><h1>Promo Desk</h1><small id="showname"></small></div>
+  <nav id="nav"></nav>
+  <div class="right"><span class="chip ver" title="Timestamps validated against the raw script by an independent checker">✓ verified</span><span class="chip heu" title="Rule-based signals: not audience data">◦ rules</span><span class="chip ai" title="Judgement from a language model">✦ AI</span><span class="chip hum" title="Editor decision">● human</span>
+  <button class="btn sm" id="theme">◐ Theme</button></div></div></div></header>
+<main><div class="wrap">
+<section class="tab" id="t-overview"></section><section class="tab" id="t-library"></section><section class="tab" id="t-campaign"></section>
+<section class="tab" id="t-compare"></section><section class="tab" id="t-studio"></section><section class="tab" id="t-story"></section><section class="tab" id="t-eval"></section>
+</div></main>
+<div class="scrim" id="scrim"></div><aside class="drawer" id="drawer"></aside><div class="toast" id="toast"></div>
+<script id="payload" type="application/json">__DATA__</script>
+<script>
+"use strict";
+const D = JSON.parse(document.getElementById('payload').textContent);
+const P = D.promos, byId = Object.fromEntries(P.map(p => [p.id, p]));
+const ENG_COL = {"Revenge":"#e5484d","Romance":"#e5619c","Betrayal":"#c58a1a","Mystery":"#6a8cf0","Rescue / protector":"#30a46c","Humiliation / status":"#d9702a","Identity reveal":"#a77be8","Conspiracy / poison":"#2aa4a4","General drama":"#8c92a3"};
+const col = e => ENG_COL[e] || "#8c92a3";
+const $ = (s, r=document) => r.querySelector(s), $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const f2 = x => (+x).toFixed(2), pct = x => Math.round(x*100);
+const KEY = 'promo-desk::' + (D.meta.show || 'show');
+let store = {decisions:{}, slate:null, editor:''};
+try { const s = localStorage.getItem(KEY); if (s) store = Object.assign(store, JSON.parse(s)); } catch(e) {}
+const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch(e) {} };
+const dec = id => store.decisions[id] || (byId[id].human && byId[id].human.status !== 'undecided' ? byId[id].human : null);
+const state = {tab:'overview', sort:'rank', q:'', ep0:1, ep1:999, grades:new Set(['A','B','C']), engine:'', dmin:0, dmax:999, spoiler:'all', status:'all', eligible:false, ai:false, cmp:[null,null], sel:null, dtab:'overview'};
+const toast = m => { const t=$('#toast'); t.textContent=m; t.classList.add('on'); clearTimeout(toast.h); toast.h=setTimeout(()=>t.classList.remove('on'),1800); };
+const TABS = [['overview','Overview'],['studio','Studio ✦'],['library','Promo library'],['campaign','Campaign builder'],['compare','Compare'],['story','Story intelligence'],['eval','Evaluation']];
+const segTxt = p => p.segments.map(s => `Ep${s.episode} ${s.start}–${s.end}`).join('  +  ');
+const toSec = t => { const m = /(\d+):(\d+(?:\.\d+)?)/.exec(t); return m ? +m[1]*60 + +m[2] : 0; };
+
+/* ---------- small visual helpers ---------- */
+const bar = (v, c) => `<div class="t"><i style="width:${pct(Math.max(0,Math.min(1,v)))}%;background:${c||'var(--acc)'}"></i></div>`;
+const mini = (l, v, c) => `<div class="mini"><span>${l}</span>${bar(v,c)}<span class="mono">${f2(v)}</span></div>`;
+const spark = (curve, color) => { if (!curve || !curve.length) return ''; const w=300,h=34,n=curve.length; const pts = curve.map((v,i)=>`${(i/(Math.max(1,n-1))*w).toFixed(1)},${(h-3-v*(h-8)).toFixed(1)}`).join(' ');
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><polyline fill="none" stroke="${color||'var(--acc)'}" stroke-width="2" stroke-linejoin="round" points="${pts}"/><polyline fill="${color||'var(--acc)'}" fill-opacity=".12" stroke="none" points="0,${h} ${pts} ${w},${h}"/></svg>`; };
+function timeline(p){ const s = p.segments[p.segments.length-1], ep = D.episodes.find(e=>e.ep===s.episode), L = ep ? ep.duration : s.end_s; const W=360;
+  const x = t => (t/L*W).toFixed(1); let out = `<svg class="tl" viewBox="0 0 ${W} 30"><rect x="0" y="12" width="${W}" height="6" rx="3" fill="var(--bg2)"/>`;
+  (ep?ep.reveals:[]).forEach(r => out += `<rect x="${x(r.t)}" y="6" width="2" height="18" fill="${r.severity>=.9?'var(--bad)':'var(--warn)'}"><title>${esc(r.kind)} reveal: ${esc(r.line)}</title></rect>`);
+  out += `<rect x="${x(s.start_s)}" y="9" width="${Math.max(3,x(s.end_s)-x(s.start_s))}" height="12" rx="4" fill="${col(p.engine)}"/>`;
+  out += `<text x="0" y="29">0:00</text><text x="${W}" y="29" text-anchor="end">${Math.floor(L/60)}:${String(Math.round(L%60)).padStart(2,'0')}</text></svg>`;
+  if (p.segments.length>1) out += `<div class="sub mono">+ setup from Ep${p.segments[0].episode} ${p.segments[0].start}–${p.segments[0].end}</div>`;
+  return out; }
+const spChip = p => { const l=p.spoiler.level, c = l==='critical'||l==='high'?'bad':l==='medium'?'warn':'ok'; return `<span class="chip ${c}" title="Reveal registry (rules)${p.spoiler.level_source==='ai'?' + AI':''}">${l==='none'?'no spoiler detected':'spoiler: '+l}</span>`; };
+const curChip = p => { const c=p.curiosity; const ai = p.ai && p.ai.editor && (p.ai.editor.open_question_answered_in_clip||p.ai.cold.final_question_answered_in_clip);
+  return `<span class="chip ${c.answered_in_clip||ai?'bad':c.open?'ok':'warn'}">${c.answered_in_clip?'ending answered':c.open?'open ending':'no clear loop'}${ai?' · AI: answered':''}</span>`; };
+const provChips = p => `<span class="chip ver">✓ cuts</span>${p.ai && p.ai.status==='judged'?'<span class="chip ai">✦ AI judged</span>':''}${dec(p.id)?`<span class="chip hum">● ${dec(p.id).status}</span>`:''}`;
+
+/* ---------- overview ---------- */
+function renderOverview(){
+  const v = D.validation, ai = D.meta.llm, n = P.length, judged = P.filter(p=>p.ai&&p.ai.status==='judged').length;
+  const flagged = P.filter(p=>['critical','high'].includes(p.spoiler.level)).length, und = P.reduce((a,p)=>a+p.cold_viewer.understanding,0)/n;
+  const gc = {A:0,B:0,C:0}; P.forEach(p=>gc[p.grade]++);
+  const ec = {}; P.forEach(p=>ec[p.engine]=(ec[p.engine]||0)+1); const em = Math.max(...Object.values(ec));
+  const m = D.campaign.metrics, b = D.campaign.top10_by_score;
+  const hist = Array.from({length:10},(_,i)=>P.filter(p=>p.score>=0.3+i*0.07&&p.score<0.3+(i+1)*0.07).length), hm=Math.max(1,...hist);
+  const maxS = Math.max(...D.episodes.map(e=>e.best), .01);
+  $('#t-overview').innerHTML = `
+  <div class="hero"><div class="row"><span class="chip">${esc(D.meta.mode)}</span><span class="chip heu">generated ${esc(D.meta.generated||'')}</span></div>
+   <h2 style="margin-top:10px">${n} promos across ${D.meta.episodes} episodes — ranked for quality, ordered for a campaign.</h2>
+   <p>Every cut is checked against the raw script. Spoilers are judged against a reveal registry; endings must be genuinely unanswered; a new viewer's understanding is measured, not assumed. Scores are rule-based and AI-assisted judgements — <b>none of them is a prediction of audience performance</b>, and no performance data was used.</p></div>
+  <div class="grid g4">
+   <div class="card tile"><div class="l">Promos found</div><div class="v">${n}</div><div class="sub">${gc.A} A · ${gc.B} B · ${gc.C} C (grade = score band, always consistent with rank)</div></div>
+   <div class="card tile"><div class="l">Cuts validated ✓</div><div class="v">${v.passed}/${v.checked}</div><div class="sub">20–60 s, on line boundaries, real timestamps</div></div>
+   <div class="card tile"><div class="l">Spoiler-flagged</div><div class="v">${flagged}</div><div class="sub">critical/high — kept out of the recommended slate</div></div>
+   <div class="card tile"><div class="l">AI-judged ✦</div><div class="v">${judged}</div><div class="sub">${ai?esc(ai.provider):'AI stage not run'}</div></div>
+   <div class="card tile"><div class="l">Avg new-viewer understanding</div><div class="v">${f2(und)}</div><div class="sub">rules estimate · AI disagreed on ${P.filter(p=>p.ai&&p.ai.disagreements&&p.ai.disagreements.length).length} promos</div></div>
+   <div class="card tile"><div class="l">Open endings</div><div class="v">${P.filter(p=>p.curiosity.open).length}</div><div class="sub">${P.filter(p=>p.curiosity.answered_in_clip).length} answered inside the clip</div></div>
+   <div class="card tile"><div class="l">Slate diversity</div><div class="v">${m.engines_covered}<span class="sub"> / ${m.engines_total} engines</span></div><div class="sub">naive top-10 covers ${b.engines_covered}; mean score ${m.mean_score} vs ${b.mean_score}</div></div>
+   <div class="card tile"><div class="l">Human decisions ●</div><div class="v">${Object.keys(store.decisions).length}</div><div class="sub">needs ≥20 to suggest weights — none learned yet</div></div>
+  </div>
+  <div class="grid g2" style="margin-top:14px">
+   <div class="card"><h3>Emotional-engine mix</h3>${Object.entries(ec).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="hbar"><span>${esc(k)}</span><div class="t"><i style="width:${v/em*100}%;background:${col(k)}"></i></div><span class="mono">${v}</span></div>`).join('')}
+     <div class="sub" style="margin-top:8px">Slate: ${Object.entries(m.engine_counts).map(([k,v])=>`<span class="chip" style="color:${col(k)}">${esc(k)} ${v}</span>`).join(' ')}</div></div>
+   <div class="card"><h3>Score distribution</h3><svg viewBox="0 0 360 120" style="width:100%">${hist.map((h,i)=>`<rect x="${i*36+4}" y="${105-h/hm*90}" width="30" height="${h/hm*90}" rx="4" fill="var(--acc)" opacity=".8"/><text x="${i*36+19}" y="118" text-anchor="middle">${(0.3+i*0.07).toFixed(2)}</text><text x="${i*36+19}" y="${100-h/hm*90}" text-anchor="middle" style="fill:var(--fg)">${h||''}</text>`).join('')}</svg>
+     <div class="sub">Grade A ≥ ${D.meta.config.grades.A}, B ≥ ${D.meta.config.grades.B}. Spoiler penalties are applied before ranking.</div></div>
+  </div>
+  <div class="card" style="margin-top:14px"><div class="row"><h3>Episode coverage</h3><span class="sub">colour = best promo score in the episode · click to filter the library</span></div>
+   <div class="heat">${D.episodes.map(e=>`<div data-ep="${e.ep}" title="Ep${e.ep}: ${e.n_promos} promo(s), best ${e.best}" style="background:${e.n_promos?`color-mix(in srgb,var(--acc) ${Math.round(20+80*e.best/maxS)}%,var(--card2))`:'var(--bg2)'};color:${e.n_promos?'#fff':'var(--dim)'}">${e.ep}</div>`).join('')}</div></div>
+  <div class="card" style="margin-top:14px"><h3>What is verified, and what is not</h3><table>
+   <tr><td><span class="chip ver">✓ verified</span></td><td>Timestamps, 20–60 s duration, no cut inside a spoken line (independent validator, ${v.passed}/${v.checked}). Reproducible: same input gives the same output.</td></tr>
+   <tr><td><span class="chip heu">◦ rules</span></td><td>Hook, cliffhanger, arc, new-viewer understanding, spoiler registry, portfolio. Heuristics from the script text; see the Evaluation tab for how well they hold up.</td></tr>
+   <tr><td><span class="chip ai">✦ AI</span></td><td>Cold-reader and editor judgement on the top ${judged}, with confidence and reasoning. Validated, never allowed to set timestamps, and surfaced next to — not instead of — the rules.</td></tr>
+   <tr><td><span class="chip hum">● human</span></td><td>Approvals, rejections and the final slate. Stored as decisions; they never change a score.</td></tr>
+   <tr><td><span class="chip bad">✗ not available</span></td><td>Any evidence that a promo performs well with real audiences. That requires a test with real viewers.</td></tr></table></div>`;
+  $$('#t-overview .heat div').forEach(d => d.onclick = () => { state.ep0 = state.ep1 = +d.dataset.ep; go('library'); });
+}
+
+/* ---------- library ---------- */
+function filtered(){
+  let L = P.filter(p => { const e = p.segments[p.segments.length-1].episode, d = dec(p.id);
+    if (e<state.ep0||e>state.ep1) return false; if (!state.grades.has(p.grade)) return false; if (state.engine && p.engine!==state.engine) return false;
+    if (p.duration_s<state.dmin||p.duration_s>state.dmax) return false;
+    if (state.spoiler==='clean' && !['none','low'].includes(p.spoiler.level)) return false; if (state.spoiler==='flagged' && !['medium','high','critical'].includes(p.spoiler.level)) return false;
+    if (state.status==='undecided' && d) return false; if (['approved','rejected','shortlisted'].includes(state.status) && (!d||d.status!==state.status)) return false;
+    if (state.eligible && !p.campaign.eligible) return false; if (state.ai && !(p.ai&&p.ai.status==='judged')) return false;
+    if (state.q){ const q=state.q.toLowerCase(); if (!(p.id.toLowerCase().includes(q)||p.transcript.toLowerCase().includes(q)||p.hook.toLowerCase().includes(q)||p.engine.toLowerCase().includes(q))) return false; }
+    return true; });
+  const S = {rank:(a,b)=>a.rank-b.rank, release:(a,b)=>a.campaign.release_priority-b.campaign.release_priority, episode:(a,b)=>a.segments[a.segments.length-1].episode-b.segments[b.segments.length-1].episode,
+    understanding:(a,b)=>b.cold_viewer.understanding-a.cold_viewer.understanding, duration:(a,b)=>a.duration_s-b.duration_s};
+  return L.sort(S[state.sort]); }
+function card(p){ const d=dec(p.id), inS=(store.slate||D.campaign.slate_ids).includes(p.id), e=p.scores;
+  return `<article class="pc ${d?d.status:''} ${inS?'inslate':''}" data-id="${p.id}">
+   <div class="hd"><span class="rk">#${p.rank}</span><span class="gr g${p.grade}" title="Quality grade from score">${p.grade}</span><span class="chip mono">${p.id}</span>
+     <span class="chip" style="color:${col(p.engine)};border-color:${col(p.engine)}55">${esc(p.engine)}</span>
+     <span class="sp"></span><span class="chip ${p.campaign.eligible?'':'warn'}" title="${esc(p.campaign.exclusions.join('; ')||'eligible for the recommended slate')}">${p.campaign.eligible?`release #${p.campaign.release_priority}${p.campaign.wave?` · wave ${p.campaign.wave}`:''}`:'not slate-eligible'}</span></div>
+   <div><div class="mono">${esc(segTxt(p))}</div><div class="sub">${p.duration_s}s · score <b style="color:var(--fg)">${p.score}</b>${p.raw_score!==p.score?` <span title="before spoiler penalty">(raw ${p.raw_score})</span>`:''}</div></div>
+   ${timeline(p)}
+   <div class="quote"><b>Hook · first 3 s</b>${esc(p.hook)}</div><div class="quote" style="border-color:var(--ai)"><b>Cliffhanger · cut</b>${esc(p.cliffhanger)}</div>
+   <div>${mini('hook',e.hook)}${mini('ending',e.cliff,'var(--ai)')}${mini('new viewer',p.cold_viewer.understanding,'var(--ver)')}${mini('arc',e.arc,'var(--hum)')}</div>
+   ${spark(p.arc.curve, col(p.engine))}
+   <div class="row">${spChip(p)}${curChip(p)}${p.cold_viewer.gaps.length?`<span class="chip warn">${p.cold_viewer.gaps.length} context gap${p.cold_viewer.gaps.length>1?'s':''}</span>`:''}${provChips(p)}</div>
+   <div class="row"><button class="btn sm" data-a="inspect">Inspect</button><button class="btn sm ok ${d&&d.status==='approved'?'on':''}" data-a="approve">Approve</button><button class="btn sm bad ${d&&d.status==='rejected'?'on':''}" data-a="reject">Reject</button>
+     <span class="sp"></span><button class="btn sm" data-a="slate">${inS?'– Slate':'+ Slate'}</button><button class="btn sm" data-a="compare">Compare</button></div></article>`; }
+function renderLibrary(){
+  const el = $('#t-library'); const engines = D.engines;
+  el.innerHTML = `<div class="filters">
+   <label class="f">Search<input type="search" id="fq" placeholder="id, line, engine…" value="${esc(state.q)}"></label>
+   <label class="f">Episode<span class="row"><input type="number" id="e0" min="1" max="${D.meta.episodes}" value="${state.ep0}"><span>–</span><input type="number" id="e1" min="1" max="${D.meta.episodes}" value="${Math.min(state.ep1,D.meta.episodes)}"></span></label>
+   <label class="f">Duration (s)<span class="row"><input type="number" id="d0" value="${state.dmin}"><span>–</span><input type="number" id="d1" value="${Math.min(state.dmax,60)}"></span></label>
+   <label class="f">Engine<select id="fe"><option value="">All</option>${engines.map(e=>`<option ${state.engine===e?'selected':''}>${esc(e)}</option>`).join('')}</select></label>
+   <label class="f">Spoilers<select id="fs">${['all','clean','flagged'].map(x=>`<option ${state.spoiler===x?'selected':''}>${x}</option>`).join('')}</select></label>
+   <label class="f">Decision<select id="fd">${['all','undecided','approved','rejected','shortlisted'].map(x=>`<option ${state.status===x?'selected':''}>${x}</option>`).join('')}</select></label>
+   <label class="f">Sort<select id="fo">${[['rank','Quality rank'],['release','Release priority'],['episode','Episode'],['understanding','New-viewer understanding'],['duration','Duration']].map(([k,l])=>`<option value="${k}" ${state.sort===k?'selected':''}>${l}</option>`).join('')}</select></label>
+   <label class="f">Grade<span class="row">${['A','B','C'].map(g=>`<button class="btn sm ${state.grades.has(g)?'on':''}" data-g="${g}">${g}</button>`).join('')}</span></label>
+   <label class="f">Only<span class="row"><button class="btn sm ${state.eligible?'on':''}" id="fel">slate-eligible</button><button class="btn sm ${state.ai?'on':''}" id="fai">AI-judged</button></span></label>
+   <span class="sp"></span><button class="btn sm" id="freset">Reset</button></div>
+   <div class="sub" id="fcount" style="margin:-4px 0 10px"></div><div class="cards" id="cards"></div>`;
+  const redraw = () => { const L = filtered(); $('#fcount').textContent = `${L.length} of ${P.length} promos`; $('#cards').innerHTML = L.map(card).join('') || '<div class="note">No promos match these filters.</div>'; };
+  const bind = (id, fn) => { const x = $(id); x.oninput = x.onchange = () => { fn(x); redraw(); }; };
+  bind('#fq', x=>state.q=x.value); bind('#e0', x=>state.ep0=+x.value||1); bind('#e1', x=>state.ep1=+x.value||999); bind('#d0', x=>state.dmin=+x.value||0); bind('#d1', x=>state.dmax=+x.value||999);
+  bind('#fe', x=>state.engine=x.value); bind('#fs', x=>state.spoiler=x.value); bind('#fd', x=>state.status=x.value); bind('#fo', x=>state.sort=x.value);
+  $$('[data-g]', el).forEach(b => b.onclick = () => { const g=b.dataset.g; state.grades.has(g)?state.grades.delete(g):state.grades.add(g); b.classList.toggle('on'); redraw(); });
+  $('#fel').onclick = e => { state.eligible=!state.eligible; e.target.classList.toggle('on'); redraw(); }; $('#fai').onclick = e => { state.ai=!state.ai; e.target.classList.toggle('on'); redraw(); };
+  $('#freset').onclick = () => { Object.assign(state,{q:'',ep0:1,ep1:999,grades:new Set(['A','B','C']),engine:'',dmin:0,dmax:999,spoiler:'all',status:'all',eligible:false,ai:false,sort:'rank'}); renderLibrary(); };
+  $('#cards').onclick = ev => { const b = ev.target.closest('[data-a]'); const c = ev.target.closest('.pc'); if (!c) return; const id=c.dataset.id;
+    if (!b) { openDrawer(id); return; } const a = b.dataset.a;
+    if (a==='inspect') openDrawer(id); else if (a==='approve') quick(id,'approved'); else if (a==='reject') openDrawer(id,'human'); else if (a==='slate') toggleSlate(id); else if (a==='compare') addCompare(id); };
+  redraw(); }
+function quick(id, status){ const cur = store.decisions[id]; if (cur && cur.status===status) delete store.decisions[id]; else store.decisions[id] = {id, status, reasons:[], note:'', ts:new Date().toISOString()}; persist(); toast(`${id}: ${store.decisions[id]?status:'decision cleared'}`); rerender(); }
+
+/* ---------- drawer ---------- */
+function openDrawer(id, tab){ state.sel=id; if(tab) state.dtab=tab; drawer(); $('#drawer').classList.add('on'); $('#scrim').classList.add('on'); }
+function closeDrawer(){ $('#drawer').classList.remove('on'); $('#scrim').classList.remove('on'); }
+const REASONS = D.decisions_schema.reasons;
+function drawer(){ const p = byId[state.sel]; if(!p) return; const t = state.dtab, d = dec(p.id);
+  const tabs = [['overview','Why selected'],['transcript','Transcript'],['story','Story context'],['cold','New-viewer check'],['ending','Ending & spoilers'],['ai','AI judgement'],['human','Human decision']];
+  $('#drawer').innerHTML = `<div class="dh"><div class="row"><span class="rk">#${p.rank}</span><span class="gr g${p.grade}">${p.grade}</span><span class="chip mono">${p.id}</span><span class="chip" style="color:${col(p.engine)}">${esc(p.engine)}</span><span class="sp"></span><button class="btn sm" id="dclose">✕ Close</button></div>
+   <div class="mono" style="margin-top:6px">${esc(segTxt(p))} · ${p.duration_s}s</div><div class="tabs">${tabs.map(([k,l])=>`<button data-t="${k}" class="${t===k?'on':''}">${l}</button>`).join('')}</div></div><div class="db" id="dbody"></div>`;
+  $('#dclose').onclick = closeDrawer; $$('.tabs button').forEach(b => b.onclick = () => { state.dtab=b.dataset.t; drawer(); });
+  const B = $('#dbody'); B[ 'innerHTML' ] = DT[t](p, d); if (DT_after[t]) DT_after[t](p); }
+const DT = {};
+const DT_after = {};
+DT.overview = p => { const s=p.scores, w=D.meta.weights;
+  return `<div class="note"><b>Why it was selected</b><br>${esc(p.why)} <span class="chip ${p.ai&&p.ai.status==='judged'&&p.why!==p.why_rules?'ai':'heu'}">${p.ai&&p.ai.status==='judged'&&p.why!==p.why_rules?'✦ AI wording':'◦ rules'}</span></div>
+   <div class="grid g2" style="margin-top:12px"><div class="card"><h3>Score breakdown <span class="chip heu">◦ rules</span></h3>
+     <table><tr><th>Component</th><th>Score</th><th>Weight</th></tr>${[['Hook (first 3 s)','hook'],['Unresolved ending','cliff'],['New-viewer understanding','standalone'],['Arc (weakest link)','arc'],['Pace','pace'],['Duration fit','duration_fit']].map(([l,k])=>`<tr><td>${l}</td><td>${mini('',s[k]).replace('62px','0px')}</td><td class="mono">${f2(w[k==='duration_fit'?'duration':k])}</td></tr>`).join('')}
+     <tr><td>Raw total</td><td colspan="2" class="mono">${p.raw_score}</td></tr><tr><td>Spoiler factor</td><td colspan="2" class="mono">× ${p.spoiler.factor||1} (${p.spoiler.level})</td></tr><tr><td><b>Final score</b></td><td colspan="2" class="mono"><b>${p.score}</b></td></tr></table></div>
+    <div class="card"><h3>Promo arc <span class="chip heu">◦ rules</span></h3><div class="row"><span class="chip ${p.arc.label==='Complete arc'?'ok':'warn'}">${esc(p.arc.label)}</span><span class="sub">score ${p.arc.score} · weakest: ${p.arc.weakest}</span></div>
+     ${['hook','context','escalation','cliffhanger'].map((k,i)=>`<div class="mini" style="grid-template-columns:90px 1fr 34px;margin:6px 0"><span>${i+1}. ${k}</span>${bar(p.arc.phases[k], p.arc.phases[k]<.45?'var(--bad)':'var(--ok)')}<span class="mono">${f2(p.arc.phases[k])}</span></div>`).join('')}
+     <div class="sub" style="margin-top:6px">Intensity across the clip</div>${spark(p.arc.curve, col(p.engine))}</div></div>
+   <div class="grid g2" style="margin-top:12px"><div class="quote"><b>Hook</b>${esc(p.hook)}</div><div class="quote" style="border-color:var(--ai)"><b>Cliffhanger</b>${esc(p.cliffhanger)}</div></div>
+   <div class="card" style="margin-top:12px"><h3>Campaign position</h3><dl class="kv"><dt>Quality rank</dt><dd>#${p.rank} of ${P.length} (grade ${p.grade})</dd><dt>Release priority</dt><dd>${p.campaign.eligible?`#${p.campaign.release_priority}${p.campaign.wave?` · wave ${p.campaign.wave}`:''}`:'not eligible'} <span class="sub">— a different question from rank: marginal value given what is already released</span></dd>
+    <dt>Concept</dt><dd>${esc(p.concept.key)}</dd><dt>Most similar earlier pick</dt><dd>${p.concept.max_similarity_to_previous??'–'} similarity</dd>${p.campaign.exclusions.length?`<dt>Excluded because</dt><dd>${esc(p.campaign.exclusions.join('; '))}</dd>`:''}
+    <dt>Where viewers land</dt><dd>${esc(p.landing)}</dd>${p.optional_cold_open?`<dt>Optional cold open</dt><dd>${esc(p.optional_cold_open)}</dd>`:''}${p.recut?`<dt>Spoiler-safe recut</dt><dd>${esc(p.recut.reason)}</dd>`:''}</dl></div>
+   <div class="card" style="margin-top:12px"><h3>Provenance</h3><div class="row"><span class="chip ver">✓ ${esc(p.provenance.timestamps)}</span><span class="chip heu">◦ ${esc(p.provenance.scores)}</span><span class="chip ai">✦ AI: ${esc(p.provenance.ai)}</span><span class="chip hum">● human: ${esc(p.provenance.human)}</span></div></div>`; };
+DT.transcript = p => { let html='', seg=null, last=null;
+  const lines = p.transcript.split('\n'); const spoken = lines.filter(l=>!l.startsWith('---'));
+  lines.forEach(l => { if (l.startsWith('---')) { const m=/Episode (\d+) ([\d:.]+)/.exec(l); seg = m ? toSec(m[2]) : 0; html += `<div class="sep">${esc(l.replace(/---/g,'').trim())}</div>`; return; }
+    const m = /^\[([\d:.]+)\] (.*)$/.exec(l); if(!m) return; const t = toSec(m[1]); const isLast = spoken.indexOf(l) >= spoken.length-2; const isHook = seg!==null && t - seg <= 3.0 && html.split('tl-line').length<4;
+    html += `<div class="tl-line ${isHook?'hook':''} ${isLast?'cliff':''}"><span class="mono w">${m[1].slice(0,5)}</span><span>${esc(m[2]).replace(/^(\(action\)|\(sound\))/,'<em>$1</em>')}</span></div>`; });
+  return `<div class="row" style="margin-bottom:8px"><span class="chip acc">hook window</span><span class="chip ai">cliffhanger beat</span><span class="sub">exact timestamps are from the script; the cut is on a line boundary (✓ validated)</span></div>${html}
+  <div class="card" style="margin-top:14px"><h3>What happens immediately after the cut</h3><pre class="mono" style="white-space:pre-wrap;margin:0">${esc(p.after_cut||'(end of available material)')}</pre><div class="sub" style="margin-top:6px">Viewers resume at: ${esc(p.landing)}</div></div>`; };
+DT.story = p => { const s=p.story;
+  return `<div class="grid g2"><div class="card"><h3>Characters in the clip</h3>${s.characters.map(c=>`<div class="row" style="margin:5px 0"><b>${esc(c.name.toLowerCase().replace(/(^|\s)\S/g,x=>x.toUpperCase()).replace("'S","'s"))}</b><span class="chip">${c.lines_in_clip} lines</span><span class="chip">first seen Ep${c.first_seen_ep}</span>${c.role?`<span class="chip">${esc(c.role)}</span>`:''}</div>`).join('')||'<span class="sub">none resolved</span>'}
+     <h3 style="margin-top:12px">Relationships</h3>${s.relations.map(r=>`<div class="row" style="margin:4px 0"><span>${esc(r.a)} ↔ ${esc(r.b)}</span><span class="chip ${r.type==='conflict'?'bad':r.type==='romance'?'acc':''}">${r.type}${r.label?' · '+esc(r.label):''}</span></div>`).join('')||'<span class="sub">no established pair</span>'}</div>
+   <div class="card"><h3>Where this sits in the story</h3><dl class="kv"><dt>Act</dt><dd>${esc(s.act)} (${pct(s.position)}% through the series)</dd><dt>Threads</dt><dd>${esc((s.threads||[]).join(', ')||'–')}</dd><dt>Episode blurb</dt><dd>${esc(s.logline)}</dd><dt>Secondary engine</dt><dd>${esc(s.secondary_engine||'–')}</dd></dl>
+     <h3 style="margin-top:12px">Emotional-engine vector</h3>${Object.entries(p.engine_vector||{}).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([k,v])=>`<div class="hbar" style="grid-template-columns:140px 1fr 36px"><span>${esc(k)}</span><div class="t"><i style="width:${v*100}%;background:${col(k)}"></i></div><span class="mono">${pct(v)}</span></div>`).join('')||''}</div></div>`; };
+DT.cold = p => { const c=p.cold_viewer, d=c.dims;
+  return `<div class="note"><b>Does a complete newcomer understand this?</b> Four pillars are measured from the clip text. <span class="chip heu">◦ rules</span> ${p.ai&&p.ai.status==='judged'?`<span class="chip ai">✦ AI cold reader: ${Object.entries(p.ai.cold.understood).map(([k,v])=>k+' '+v).join(' · ')}</span>`:''}</div>
+   <div class="grid g2" style="margin-top:12px"><div class="card"><h3>Understanding ${f2(c.understanding)}</h3>${Object.entries(d).map(([k,v])=>`<div class="mini" style="grid-template-columns:90px 1fr 34px;margin:6px 0"><span>${k}</span>${bar(v, v<.5?'var(--bad)':v<.8?'var(--warn)':'var(--ok)')}<span class="mono">${f2(v)}</span></div>`).join('')}</div>
+   <div class="card"><h3>Context gaps</h3>${c.gaps.length?c.gaps.map(g=>`<div class="warnbox"><b>${g.type}</b> · severity ${f2(g.severity)}<br>${esc(g.detail)}</div>`).join(''):'<span class="chip ok">no gaps detected by the rules</span>'}</div></div>
+   ${p.ai&&p.ai.status==='judged'&&p.ai.cold.confusions.length?`<div class="card" style="margin-top:12px"><h3>What the AI cold reader could not follow <span class="chip ai">✦</span></h3><ul>${p.ai.cold.confusions.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`:''}
+   <div class="card" style="margin-top:12px"><h3>Suggested context repairs</h3>${p.repairs.length?p.repairs.map(r=>`<div class="warnbox"><div class="row"><b>Prepend ${r.segments[0].episode===p.segments[p.segments.length-1].episode?'earlier moment':'setup from Ep'+r.segments[0].episode}</b><span class="mono">Ep${r.segments[0].episode} ${fmt(r.segments[0].start)}–${fmt(r.segments[0].end)}</span><span class="sp"></span><span class="chip ok">understanding ${f2(r.understanding_before)} → ${f2(r.understanding_after)}</span><span class="chip">score ${f2(r.total_before)} → ${f2(r.total_after)}</span></div>
+     <div class="sub">fixes: ${esc(r.gaps_fixed.join(', ')||'general clarity')} · same characters/thread as the main clip (coherence gate) · setup hook ${r.setup_hook}</div><pre class="mono" style="white-space:pre-wrap;margin:6px 0 0">${esc(r.setup_transcript.split('\n').slice(1).join('\n'))}</pre></div>`).join(''):`<span class="sub">${p.segments.length>1?'A setup segment is already included in this promo.':'No coherent repair improves this clip.'}</span>`}</div>`; };
+const fmt = s => { const t=+s; return `${String(Math.floor(t/60)).padStart(2,'0')}:${(t%60).toFixed(2).padStart(5,'0')}`; };
+DT.ending = p => { const c=p.curiosity, sp=p.spoiler, a=p.ai&&p.ai.status==='judged'?p.ai:null;
+  return `<div class="grid g2"><div class="card"><h3>Curiosity gate <span class="chip heu">◦ rules</span></h3><div class="row"><span class="chip ${c.open?'ok':'bad'}">${c.open?'ending is open':c.answered_in_clip?'answered inside the clip':'no open loop'}</span><span class="chip">${esc(c.type)}</span><span class="chip">confidence ${f2(c.confidence)}</span></div>
+     <p>${esc(c.reason)}</p>${c.text?`<div class="quote"><b>Open question / beat</b>${esc(c.text)}</div>`:''}<dl class="kv" style="margin-top:8px"><dt>Answer seen on screen?</dt><dd>${c.visual_answer?'yes — the viewer already saw it':'no'}</dd><dt>Payoff right after cut</dt><dd>${c.payoff_after_cut===null?'unknown':c.payoff_after_cut?'yes — the very next line answers it':'no'}</dd></dl>
+     ${a?`<hr style="border-color:var(--line)"><div class="row"><span class="chip ai">✦ AI editor</span><span class="chip ${a.editor.open_question_answered_in_clip?'bad':'ok'}">${a.editor.open_question_answered_in_clip?'answered in clip':'open'}</span></div><p>${esc(a.editor.cliffhanger)}</p>`:''}</div>
+   <div class="card"><h3>Spoiler protection <span class="chip heu">◦ rules</span></h3><div class="row"><span class="chip ${['critical','high'].includes(sp.level)?'bad':sp.level==='medium'?'warn':'ok'}">risk: ${sp.level}</span><span class="chip">source: ${sp.level_source||'reveal registry'}</span><span class="chip">score × ${sp.factor||1}</span></div>
+     ${sp.items.length?sp.items.map(i=>`<div class="warnbox"><b>${i.kind} reveal</b> (Ep${i.ep} ${fmt(i.t)}) ${i.premise?'<span class="chip bad">central twist</span>':''}<br>“${esc(i.line)}”</div>`).join(''):'<p class="sub">No disclosure from the reveal registry inside this clip.</p>'}
+     ${sp.curiosity_questions&&sp.curiosity_questions.length?`<div class="quote" style="border-color:var(--ok)"><b>Reveal posed as a question — good curiosity, not a spoiler</b>${esc(sp.curiosity_questions[0])}</div>`:''}
+     ${a&&a.editor.spoils_major_reveal?`<div class="warnbox"><span class="chip ai">✦ AI</span> flags spoiler level ${a.editor.spoils_major_reveal}: ${esc(a.editor.spoiler_note)}</div>`:''}</div></div>
+   <div class="note" style="margin-top:12px">Absence of a flag is <b>not proof</b> of safety: the registry only knows reveal patterns it can detect in the script. A human should confirm anything going live.</div>`; };
+DT.ai = p => { const a=p.ai; if (!a||a.status!=='judged') return `<div class="note">No AI judgement for this promo (${esc(a?a.status:'not run')}). Only the top ${D.meta.llm?D.meta.llm.judged:'N'} are judged. Run the AI stage with any model: <span class="mono">--llm</span> or <span class="mono">--llm-export / --llm-replay</span>.</div>`;
+  const c=a.cold, e=a.editor;
+  return `<div class="note"><span class="chip ai">✦ AI judgement</span> ${esc(a.provider)} · ${esc(a.model)}. The model sees only text; it cannot set timestamps; its output is schema-validated. Confidence <b>${f2(a.confidence)}</b>${a.needs_human_review?' · <span class="chip warn">needs human review</span>':''}</div>
+   ${a.disagreements.length?`<div class="card" style="margin-top:12px"><h3>Where the AI and the rules disagree</h3>${a.disagreements.map(d=>`<div class="warnbox">${esc(d)}</div>`).join('')}</div>`:''}
+   <div class="grid g2" style="margin-top:12px"><div class="card"><h3>Cold reader</h3><p>${esc(c.what_is_happening)}</p><dl class="kv"><dt>Who is who</dt><dd>${esc(c.who_is_who)}</dd><dt>Would stop scrolling</dt><dd>${c.would_stop_scrolling}/5</dd><dt>Wants to know next</dt><dd>${c.wants_to_know_next}/5</dd><dt>Answered in clip?</dt><dd>${c.final_question_answered_in_clip?'yes':'no'}</dd><dt>Open question</dt><dd>${esc(c.open_question)}</dd><dt>Reasoning</dt><dd>${esc(c.reasoning)}</dd></dl></div>
+   <div class="card"><h3>Editor</h3><dl class="kv"><dt>Cut quality</dt><dd>${e.cut_quality}/5</dd><dt>Release first?</dt><dd>${e.would_release_first?'yes':'no'}</dd><dt>Spoils reveal</dt><dd>${e.spoils_major_reveal}/2 ${esc(e.spoiler_note)}</dd><dt>Answered by what follows</dt><dd>${e.answered_by_what_follows?'yes (good)':'no'}</dd><dt>Risks</dt><dd>${esc(e.risks)}</dd><dt>Reasoning</dt><dd>${esc(e.reasoning)}</dd></dl></div></div>
+   <div class="card" style="margin-top:12px"><h3>Effect on score</h3><dl class="kv"><dt>Engine score</dt><dd>${f2(a.engine_score)}</dd><dt>AI score</dt><dd>${f2(a.llm_score)} (understanding ${f2(a.understood_mean)})</dd><dt>Effective blend</dt><dd>${f2(a.effective_blend)} <span class="sub">= weight × confidence; low confidence moves the score less</span></dd><dt>Final</dt><dd><b>${p.score}</b></dd></dl>
+   ${a.suggested_trim?`<hr style="border-color:var(--line)"><b>Suggested trim</b> (drop ${a.suggested_trim.drop_leading_lines} leading / ${a.suggested_trim.drop_trailing_lines} trailing lines): ${a.suggested_trim.valid?`valid → ${fmt(a.suggested_trim.start)}–${fmt(a.suggested_trim.end)}, projected score ${a.suggested_trim.projected_total} (${a.suggested_trim.projected_delta>=0?'+':''}${a.suggested_trim.projected_delta}) — <b>not applied; editor decides</b>`:`<span class="chip bad">rejected by validator</span> ${esc(a.suggested_trim.reason)}`}`:''}</div>`; };
+DT.human = (p, d) => { d = d || {status:'undecided',reasons:[],note:''};
+  return `<div class="note"><span class="chip hum">● human decision</span> Decisions never change a score — nothing proves an approval means better performance. They control eligibility and the slate, and are stored so weights can be <i>suggested</i> once there is enough data (≥20 decisions, ≥8 per class).</div>
+   <div class="row" style="margin:12px 0"><button class="btn ok ${d.status==='approved'?'on':''}" data-s="approved">Approve</button><button class="btn bad ${d.status==='rejected'?'on':''}" data-s="rejected">Reject</button><button class="btn ${d.status==='shortlisted'?'on':''}" data-s="shortlisted">Shortlist</button><button class="btn" data-s="clear">Clear</button></div>
+   <div class="card"><h3>Reason (for rejections, and notes on approvals)</h3><div class="row">${Object.entries(REASONS).map(([k,l])=>`<label class="chip" style="cursor:pointer"><input type="checkbox" value="${k}" ${d.reasons.includes(k)?'checked':''}> ${esc(l)}</label>`).join('')}</div>
+   <textarea id="dnote" placeholder="Note for the team (optional)">${esc(d.note||'')}</textarea><div class="row" style="margin-top:8px"><button class="btn pri" id="dsave">Save decision</button><span class="sub">stored in this browser · export from the Campaign tab</span></div></div>`; };
+DT_after.human = p => { let st = (dec(p.id)||{}).status || 'undecided'; $$('[data-s]').forEach(b => b.onclick = () => { st = b.dataset.s; $$('[data-s]').forEach(x=>x.classList.toggle('on', x===b)); });
+  $('#dsave').onclick = () => { if (st==='clear'||st==='undecided') { delete store.decisions[p.id]; } else { store.decisions[p.id] = {id:p.id, status:st, reasons:$$('#dbody input[type=checkbox]:checked').map(x=>x.value), note:$('#dnote').value, ts:new Date().toISOString()}; }
+    persist(); toast('Decision saved'); rerender(); drawer(); }; };
+
+/* ---------- campaign ---------- */
+function slateIds(){ return store.slate || D.campaign.slate_ids.slice(); }
+function simJS(a, b){ const A=a.concept, B=b.concept, j=(x,y)=>{const s=new Set(x), t=new Set(y), i=[...s].filter(v=>t.has(v)).length; return i/Math.max(1,new Set([...s,...t]).size)};
+  return .4*(A.engine===B.engine) + .3*j(A.chars,B.chars) + .15*((A.threads||[]).some(t=>(B.threads||[]).includes(t))) + .15*j(A.terms||[],B.terms||[]); }
+function metrics(ids){ const ps=ids.map(i=>byId[i]); const n=ps.length||1, ec={}; ps.forEach(p=>ec[p.engine]=(ec[p.engine]||0)+1);
+  let sims=[]; ps.forEach((a,i)=>ps.slice(i+1).forEach(b=>sims.push(simJS(a,b)))); const H=-Object.values(ec).reduce((s,c)=>s+(c/n)*Math.log(c/n),0)/Math.log(D.engines.length);
+  return {n:ps.length, engines:Object.keys(ec).length, entropy:H, sim:sims.reduce((a,b)=>a+b,0)/Math.max(1,sims.length), eps:new Set(ps.map(p=>p.segments[p.segments.length-1].episode)).size, score:ps.reduce((a,p)=>a+p.score,0)/n, ec}; }
+function renderCampaign(){ const ids = slateIds(), N = D.meta.config.portfolio.slate_size, m = metrics(ids), pool = P.filter(p=>!ids.includes(p.id)&&!(dec(p.id)&&dec(p.id).status==='rejected')).sort((a,b)=>(a.campaign.eligible?a.campaign.release_priority:9999+a.rank)-(b.campaign.eligible?b.campaign.release_priority:9999+b.rank));
+  const warns = []; ids.forEach(i=>{ const p=byId[i]; if(['critical','high'].includes(p.spoiler.level)) warns.push(`${i}: spoiler risk ${p.spoiler.level} — ${p.campaign.exclusions.join('; ')}`); if(p.curiosity.answered_in_clip) warns.push(`${i}: ending answered inside the clip`); if(dec(i)&&dec(i).status==='rejected') warns.push(`${i}: rejected by an editor`); if(p.ai&&p.ai.needs_human_review) warns.push(`${i}: AI and rules disagree — review first`); });
+  Object.entries(m.ec).forEach(([k,v])=>{ if(v>=3) warns.push(`${v} promos share the "${k}" engine — repetitive concept`); }); if (ids.length>N) warns.push(`Slate has ${ids.length} promos; target is ${N}`);
+  const b = D.campaign.top10_by_score;
+  const slot = (i) => { const id = ids[i]; if(!id) return `<div class="slot" data-i="${i}"><span class="n">${i+1}</span><span class="sub">empty — add from the pool, or auto-fill</span></div>`; const p=byId[id];
+    return `<div class="slot f" draggable="true" data-i="${i}" data-id="${id}"><span class="n">${i+1}</span><div style="flex:1;min-width:0"><div class="row"><b class="mono">${id}</b><span class="gr g${p.grade}">${p.grade}</span><span class="chip" style="color:${col(p.engine)}">${esc(p.engine)}</span>${spChip(p)}<span class="chip">wave ${i<3?1:i<7?2:3}</span></div>
+     <div class="sub" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(segTxt(p))} · ${esc(p.hook)}</div></div><button class="btn sm" data-a="inspect" data-id="${id}">Inspect</button><button class="btn sm bad" data-a="remove" data-id="${id}">✕</button></div>`; };
+  $('#t-campaign').innerHTML = `<div class="hero" style="padding:18px 22px"><h2 style="font-size:24px">Campaign slate builder</h2><p>Ranking says which promos are best <i>individually</i>. The slate is a different decision: which ten to release, in what order, so they test <b>different hooks</b>, don't spoil each other, and spread across the story. Drag to reorder; editors have the final word.</p></div>
+  <div class="grid" style="gap:14px;align-items:start" id="cgrid">
+   <div><div class="row" style="margin-bottom:8px"><h3>Your slate (${ids.length}/${N})</h3><span class="sp"></span><button class="btn sm pri" id="cauto">Auto-fill recommended</button><button class="btn sm" id="cclear">Clear</button><button class="btn sm" id="cexp">Export decisions + slate</button><button class="btn sm" id="cmd">Brief (.md)</button><button class="btn sm" id="cimp">Import</button><input type="file" id="cfile" accept=".json" style="display:none"></div>
+    <div id="slots" class="grid" style="gap:8px">${Array.from({length:Math.max(N,ids.length)},(_,i)=>slot(i)).join('')}</div>
+    ${warns.map(w=>`<div class="warnbox">⚠ ${esc(w)}</div>`).join('')}<div class="sub" style="margin-top:8px">Source: ${store.slate?'<span class="chip hum">● editor-edited</span>':'<span class="chip heu">◦ optimizer recommendation</span>'}</div></div>
+   <div><div class="card"><h3>Diversity meter</h3>
+     ${[['Engines covered',m.engines+' / '+D.engines.length,m.engines/D.engines.length],['Engine entropy',f2(m.entropy),m.entropy],['Repetition (pairwise similarity, lower is better)',f2(m.sim),1-Math.min(1,m.sim*3)],['Distinct episodes',m.eps+' / '+m.n,m.eps/Math.max(1,m.n)],['Mean score',f2(m.score),m.score]].map(([l,v,x])=>`<div class="mini" style="grid-template-columns:150px 1fr 56px;margin:6px 0"><span>${l}</span>${bar(x,'var(--ver)')}<span class="mono">${v}</span></div>`).join('')}
+     <div class="sub" style="margin-top:6px">Optimizer slate vs naive top-10 by score: engines ${D.campaign.metrics.engines_covered} vs ${b.engines_covered}, similarity ${D.campaign.metrics.mean_pairwise_similarity} vs ${b.mean_pairwise_similarity}, mean score ${D.campaign.metrics.mean_score} vs ${b.mean_score}. Diversity costs a little score — by design.</div>
+     <div class="row" style="margin-top:8px">${Object.entries(m.ec).map(([k,v])=>`<span class="chip" style="color:${col(k)}">${esc(k)} ×${v}</span>`).join('')}</div></div>
+    <div class="card" style="margin-top:14px"><h3>Pool <span class="sub">(by release priority)</span></h3><div style="max-height:520px;overflow:auto">${pool.slice(0,40).map(p=>`<div class="row" style="padding:6px 0;border-bottom:1px solid var(--line)"><span class="chip mono">${p.id}</span><span class="gr g${p.grade}">${p.grade}</span><span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" class="sub">${esc(p.engine)} · ${esc(p.hook.slice(0,50))}</span>${p.campaign.eligible?'':'<span class="chip warn">flagged</span>'}<button class="btn sm" data-a="inspect" data-id="${p.id}">⌕</button><button class="btn sm" data-a="add" data-id="${p.id}">+ add</button></div>`).join('')}</div></div></div></div>`;
+  const root = $('#t-campaign'); root.onclick = ev => { const b=ev.target.closest('[data-a]'); if(!b) return; const id=b.dataset.id, a=b.dataset.a; if(a==='inspect') openDrawer(id); else if(a==='remove') { store.slate=slateIds().filter(x=>x!==id); persist(); renderCampaign(); } else if(a==='add'){ const s=slateIds(); s.push(id); store.slate=s; persist(); renderCampaign(); } };
+  $('#cauto').onclick = () => { store.slate=null; persist(); renderCampaign(); toast('Recommended slate restored'); }; $('#cclear').onclick = () => { store.slate=[]; persist(); renderCampaign(); };
+  $('#cexp').onclick = () => download('decisions.json', JSON.stringify(exportData(),null,2), 'application/json'); $('#cmd').onclick = () => download('campaign_brief.md', brief(), 'text/markdown');
+  $('#cimp').onclick = () => $('#cfile').click(); $('#cfile').onchange = e => { const f=e.target.files[0]; if(!f) return; f.text().then(t=>{ try{ const j=JSON.parse(t); (j.decisions||[]).forEach(d=>{ if(byId[d.id]) store.decisions[d.id]=d; }); if(j.slate) store.slate=j.slate.filter(i=>byId[i]); persist(); toast('Imported'); rerender(); }catch(x){ toast('Invalid file'); } }); };
+  let drag=null; $$('.slot.f', root).forEach(s=>{ s.ondragstart=e=>{drag=+s.dataset.i; e.dataTransfer.effectAllowed='move';}; s.ondragover=e=>{e.preventDefault(); s.classList.add('over');}; s.ondragleave=()=>s.classList.remove('over');
+    s.ondrop=e=>{ e.preventDefault(); const to=+s.dataset.i; if(drag===null||drag===to) return; const a=slateIds(); const [x]=a.splice(drag,1); a.splice(to,0,x); store.slate=a; persist(); renderCampaign(); }; });
+}
+function exportData(){ return {schema:1, editor:store.editor||'', show:D.meta.show, exported:new Date().toISOString(), decisions:Object.values(store.decisions), slate:slateIds()}; }
+function brief(){ const ids=slateIds(), m=metrics(ids); return `# Campaign brief — ${D.meta.show}\n\nMode: ${D.meta.mode}\n\n| # | Wave | Promo | Segments | Engine | Score | Spoiler | Decision |\n|---|---|---|---|---|---|---|---|\n`+ids.map((i,k)=>{const p=byId[i],d=dec(i);return `| ${k+1} | ${k<3?1:k<7?2:3} | ${i} | ${segTxt(p)} | ${p.engine} | ${p.score} | ${p.spoiler.level} | ${d?d.status:'undecided'} |`;}).join('\n')+`\n\nEngines covered: ${m.engines}/${D.engines.length}. Mean pairwise similarity: ${f2(m.sim)}.\n\n_Scores are rule-based and AI-assisted judgements, not predictions of audience performance._\n`; }
+function download(name, text, type){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type})); a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),500); }
+function toggleSlate(id){ const s=slateIds(); const i=s.indexOf(id); if(i>=0) s.splice(i,1); else s.push(id); store.slate=s; persist(); toast(i>=0?`${id} removed from slate`:`${id} added to slate`); rerender(); }
+
+/* ---------- compare ---------- */
+function addCompare(id){ if(state.cmp[0]===id) return; state.cmp = [state.cmp[1]&&state.cmp[1]!==id?state.cmp[1]:state.cmp[0], id].map(x=>x||null); if(state.cmp[0]===state.cmp[1]) state.cmp[0]=null; if(state.cmp[0]&&state.cmp[1]){ toast(`Comparing ${state.cmp[0]} and ${state.cmp[1]}`); go('compare'); } else toast(`${id} picked — choose a second promo to compare`); }
+function renderCompare(){ const opts = (sel) => `<option value="">— choose —</option>`+P.map(p=>`<option value="${p.id}" ${sel===p.id?'selected':''}>#${p.rank} ${p.id} · ${esc(p.engine)}</option>`).join('');
+  const col_ = id => { if(!id) return `<div class="note">Pick a promo.</div>`; const p=byId[id], s=p.scores;
+    return `<div class="card"><div class="row"><span class="rk">#${p.rank}</span><span class="gr g${p.grade}">${p.grade}</span><b class="mono">${p.id}</b>${spChip(p)}${curChip(p)}</div><div class="mono" style="margin:6px 0">${esc(segTxt(p))} · ${p.duration_s}s</div>${timeline(p)}
+     <table><tr><td>Final score</td><td class="mono"><b>${p.score}</b> (raw ${p.raw_score})</td></tr><tr><td>Release priority</td><td class="mono">${p.campaign.eligible?'#'+p.campaign.release_priority:'ineligible'}</td></tr><tr><td>Engine</td><td style="color:${col(p.engine)}">${esc(p.engine)}</td></tr><tr><td>Arc</td><td>${esc(p.arc.label)}</td></tr><tr><td>New-viewer understanding</td><td class="mono">${f2(p.cold_viewer.understanding)}</td></tr><tr><td>Context gaps</td><td>${p.cold_viewer.gaps.map(g=>g.type).join(', ')||'none'}</td></tr>
+     <tr><td>AI</td><td>${p.ai&&p.ai.status==='judged'?`stop ${p.ai.cold.would_stop_scrolling}/5 · confidence ${f2(p.ai.confidence)}`:'not judged'}</td></tr></table>
+     ${mini('hook',s.hook)}${mini('ending',s.cliff,'var(--ai)')}${mini('new viewer',s.standalone,'var(--ver)')}${mini('arc',s.arc,'var(--hum)')}${mini('pace',s.pace,'var(--heu)')}
+     <div class="quote" style="margin-top:8px"><b>Hook</b>${esc(p.hook)}</div><div class="quote" style="border-color:var(--ai);margin-top:6px"><b>Cliffhanger</b>${esc(p.cliffhanger)}</div>
+     <details style="margin-top:8px"><summary class="sub" style="cursor:pointer">transcript</summary><pre class="mono" style="white-space:pre-wrap">${esc(p.transcript)}</pre></details>
+     <div class="row" style="margin-top:8px"><button class="btn sm" data-a="inspect" data-id="${id}">Inspect</button><button class="btn sm ok" data-a="approve" data-id="${id}">Approve</button><button class="btn sm" data-a="slate" data-id="${id}">${slateIds().includes(id)?'– Slate':'+ Slate'}</button></div></div>`; };
+  const [a,b]=state.cmp; let verdict = '';
+  if(a&&b){ const x=byId[a], y=byId[b]; verdict = `<div class="note" style="margin-bottom:12px"><b>Individually</b> ${x.score>=y.score?x.id:y.id} scores higher (${Math.max(x.score,y.score)} vs ${Math.min(x.score,y.score)}). <b>As a pair</b>: similarity ${f2(simJS(x,y))} — ${x.engine===y.engine?'same engine, so they test the same hook; release only one early':'different engines, so they make a useful A/B test'}.</div>`; }
+  $('#t-compare').innerHTML = `<div class="row" style="margin-bottom:12px"><h3>Side-by-side</h3><span class="sp"></span><select id="ca">${opts(a)}</select><select id="cb">${opts(b)}</select></div>${verdict}<div class="grid g2">${col_(a)}${col_(b)}</div>`;
+  $('#ca').onchange = e => { state.cmp[0]=e.target.value||null; renderCompare(); }; $('#cb').onchange = e => { state.cmp[1]=e.target.value||null; renderCompare(); };
+  $('#t-compare').onclick = ev => { const b=ev.target.closest('[data-a]'); if(!b) return; const id=b.dataset.id; ({inspect:()=>openDrawer(id), approve:()=>quick(id,'approved'), slate:()=>toggleSlate(id)})[b.dataset.a](); };
+}
+
+/* ---------- story ---------- */
+function renderStory(){ const S=D.story, chars=S.characters.slice(0,10), pos={}, W=520,H=380,cx=W/2,cy=H/2,R=150;
+  chars.forEach((c,i)=>{ const a=i/chars.length*2*Math.PI-Math.PI/2; pos[c.name]=[cx+R*Math.cos(a),cy+R*Math.sin(a)]; });
+  const ECOL={conflict:'#ef5b5b',romance:'#e5619c',kin:'#9a8cff',alliance:'#8c92a3'}; const maxw=Math.max(1,...S.edges.map(e=>e.weight));
+  const edges = S.edges.filter(e=>pos[e.a]&&pos[e.b]).slice(0,22);
+  const ep = state.storyEp||1, E = D.episodes.find(e=>e.ep===ep), L=(E.curve.length||1)*2;
+  const proms = P.filter(p=>p.segments[p.segments.length-1].episode===ep);
+  const pretty = n => n.toLowerCase().replace(/(^|\s)\S/g,x=>x.toUpperCase()).replace("'S","'s");
+  $('#t-story').innerHTML = `<div class="grid g2"><div class="card"><h3>Character relationship graph <span class="chip heu">◦ rules</span></h3><svg viewBox="0 0 ${W} ${H}" style="width:100%">${edges.map(e=>{const[a,b]=[pos[e.a],pos[e.b]];return `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="${ECOL[e.type]}" stroke-width="${(1+e.weight/maxw*5).toFixed(1)}" opacity=".55"><title>${esc(pretty(e.a))} ↔ ${esc(pretty(e.b))}: ${e.type}${e.label?' ('+esc(e.label)+')':''}, ${e.weight} shared scenes</title></line>`;}).join('')}
+    ${chars.map(c=>{const[x,y]=pos[c.name];const r=8+Math.min(16,c.lines/12);return `<circle cx="${x}" cy="${y}" r="${r}" fill="var(--card2)" stroke="var(--acc)" stroke-width="2"><title>${esc(pretty(c.name))}: ${c.lines} lines, first seen Ep${c.first_ep}</title></circle><text x="${x}" y="${y+r+12}" text-anchor="middle" style="fill:var(--fg)">${esc(pretty(c.name).slice(0,16))}</text>`;}).join('')}</svg>
+    <div class="row">${Object.entries(ECOL).map(([k,c])=>`<span class="chip" style="color:${c}">● ${k}</span>`).join('')}<span class="sub">edge width = shared scenes</span></div></div>
+   <div class="card"><h3>Story threads</h3><table><tr><th>Thread</th><th>Type</th><th>Episodes</th></tr>${S.threads.slice(0,9).map(t=>`<tr><td>${esc(t.name)}</td><td><span class="chip ${t.type==='conflict'?'bad':''}">${t.type}${t.label?' · '+esc(t.label):''}</span></td><td class="mono">${t.span[0]}–${t.span[1]}</td></tr>`).join('')}</table>
+    <h3 style="margin-top:14px">Reveal registry <span class="chip heu">◦ rules</span></h3><div class="sub">Where the show discloses identities, survivals and culprits. Red = central twist (critical). Clips that contain these moments are penalised and kept out of the slate.</div>
+    <svg viewBox="0 0 500 60" style="width:100%"><line x1="10" y1="34" x2="490" y2="34" stroke="var(--line)" stroke-width="2"/>${S.reveals.map(r=>`<circle cx="${10+(r.ep-1)/(D.meta.episodes-1)*480}" cy="34" r="${4+r.severity*4}" fill="${r.severity>=.9?'var(--bad)':'var(--warn)'}"><title>Ep${r.ep}: ${esc(r.kind)} — ${esc(r.line)}</title></circle>`).join('')}<text x="10" y="56">Ep1</text><text x="490" y="56" text-anchor="end">Ep${D.meta.episodes}</text></svg></div></div>
+   <div class="card" style="margin-top:14px"><div class="row"><h3>Episode analytics</h3><span class="sp"></span><label class="f">Episode<select id="sep">${D.episodes.map(e=>`<option value="${e.ep}" ${e.ep===ep?'selected':''}>Ep ${e.ep}</option>`).join('')}</select></label></div>
+    <div class="sub" style="margin:6px 0">${esc(E.act)} · mean intensity ${E.mean} · peak ${E.peak} at ${Math.floor(E.peak_t/60)}:${String(E.peak_t%60).padStart(2,'0')} — ${esc(E.logline)}</div>
+    <svg viewBox="0 0 700 120" style="width:100%"><polyline fill="var(--acc)" fill-opacity=".14" stroke="var(--acc)" stroke-width="2" points="0,110 ${E.curve.map((v,i)=>`${(i/Math.max(1,E.curve.length-1)*700).toFixed(1)},${(110-v*95).toFixed(1)}`).join(' ')} 700,110"/>
+    ${proms.map(p=>{const s=p.segments[p.segments.length-1];return `<rect x="${s.start_s/E.duration*700}" y="2" width="${(s.end_s-s.start_s)/E.duration*700}" height="8" rx="3" fill="${col(p.engine)}"><title>${p.id} ${esc(p.engine)}</title></rect>`;}).join('')}
+    ${E.reveals.map(r=>`<line x1="${r.t/E.duration*700}" x2="${r.t/E.duration*700}" y1="14" y2="110" stroke="${r.severity>=.9?'var(--bad)':'var(--warn)'}" stroke-dasharray="3 3"><title>${esc(r.kind)}: ${esc(r.line)}</title></line>`).join('')}</svg>
+    <div class="row">${proms.map(p=>`<button class="btn sm" data-id="${p.id}">${p.id} · ${p.grade} · ${esc(p.engine)}</button>`).join('')||'<span class="sub">no promo selected from this episode</span>'}</div></div>
+   <div class="card" style="margin-top:14px"><h3>Story progression: intensity by episode</h3><svg viewBox="0 0 700 110" style="width:100%">${D.episodes.map((e,i)=>`<rect x="${i*14+2}" y="${95-e.mean*140}" width="11" height="${e.mean*140}" rx="3" fill="${e.n_promos?'var(--acc)':'var(--dim)'}" opacity=".85" data-ep="${e.ep}" style="cursor:pointer"><title>Ep${e.ep}: mean ${e.mean}, ${e.n_promos} promo(s)</title></rect>`).join('')}<text x="2" y="108">Ep1</text><text x="698" y="108" text-anchor="end">Ep${D.meta.episodes}</text></svg></div>`;
+  $('#sep').onchange = e => { state.storyEp=+e.target.value; renderStory(); };
+  $$('#t-story [data-id]').forEach(b=>b.onclick=()=>openDrawer(b.dataset.id)); $$('#t-story rect[data-ep]').forEach(r=>r.onclick=()=>{state.storyEp=+r.dataset.ep; renderStory();}); }
+
+/* ---------- evaluation ---------- */
+function renderEval(){ const ch = D.evaluation.checks, fl = D.evaluation.failures||[], v=D.validation, J=P.filter(p=>p.ai&&p.ai.status==='judged');
+  const dis = {}; J.forEach(p=>p.ai.disagreements.forEach(d=>dis[d]=(dis[d]||0)+1)); const decs = Object.values(store.decisions), ap=decs.filter(d=>d.status==='approved').length, rj=decs.filter(d=>d.status==='rejected').length;
+  const rr = {}; decs.filter(d=>d.status==='rejected').forEach(d=>(d.reasons||[]).forEach(r=>rr[r]=(rr[r]||0)+1));
+  const ready = Math.min(1, (ap+rj)/20);
+  $('#t-eval').innerHTML = `<div class="hero" style="padding:18px 22px"><h2 style="font-size:24px">Evaluation — what we can and cannot claim</h2><p>No promo here has been tested with real viewers, so <b>nothing on this page says a promo is effective</b>. These are checks on whether the tool behaves sensibly.</p></div>
+  <div class="grid g2"><div class="card"><h3><span class="chip ver">✓ verified</span> Hard rules</h3><div class="tile"><div class="v">${v.passed}/${v.checked}</div></div><div class="sub">Independent validator: duration, bounds, no mid-line cuts, order. Plus automated tests (see README).</div></div>
+   <div class="card"><h3><span class="chip ai">✦ AI</span> Agreement between AI and rules</h3>${J.length?`<div class="sub">${J.length} promos judged by ${esc(D.meta.llm.provider)}. Mean AI confidence ${f2(J.reduce((a,p)=>a+p.ai.confidence,0)/J.length)}.</div>${Object.entries(dis).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="hbar" style="grid-template-columns:1fr 40px"><span>${esc(k)}</span><span class="mono">${v}</span></div>`).join('')||'<div class="sub">no disagreements</div>'}<div class="sub" style="margin-top:6px">Disagreement is information: those promos are flagged for a human look.</div>`:'<div class="sub">AI stage not run.</div>'}</div></div>
+  ${ch?`<div class="card" style="margin-top:14px"><h3><span class="chip heu">◦ rules</span> Self-checks on the rubric</h3><table>
+    <tr><td>Weight sensitivity (±30%, ${ch.sensitivity.trials} trials)</td><td class="mono">mean top-10 Jaccard ${ch.sensitivity.mean_jaccard_top10}; ${ch.sensitivity['baseline_top10_still_in_top10_in_>=80%_of_trials']}/10 stay in ≥80% of trials</td><td class="sub">top picks are not an artefact of the weights</td></tr>
+    <tr><td>Ablation: top-10 promos that change</td><td class="mono">${Object.entries(ch.ablation_top10_promos_that_change).map(([k,v])=>k+' '+v).join(' · ')}</td><td class="sub">a signal that changes 0 promos adds nothing</td></tr>
+    <tr><td>Silver label: can rules spot writers' own episode-end cliffhangers?</td><td class="mono">AUROC ${ch.silver_cliff_auroc}</td><td class="sub"><b>near chance</b> — these writers stage cliffhangers visually; the lexical scorer measures tension</td></tr>
+    ${ch.blind?`<tr><td>Blind A/B vs random clip (${esc(ch.blind.rater)})</td><td class="mono">${ch.blind.wins}/${ch.blind.n} (${Math.round(100*ch.blind.wins/ch.blind.n)}%), p=${ch.blind.p}</td><td class="sub">${esc(ch.blind.reading)}</td></tr>`:''}</table></div>`:''}
+  <div class="grid g2" style="margin-top:14px"><div class="card"><h3><span class="chip hum">● human</span> Editor feedback loop</h3><div class="sub">${ap} approved · ${rj} rejected in this browser. Learning needs ≥20 decisions with ≥8 of each. <b>${ready<1?'No weights are suggested yet — nothing has been learned.':'Enough decisions to try: run <span class="mono">python -m promo.learn decisions.json promos.json</span>.'}</b></div>
+    <div style="margin:8px 0">${bar(ready,'var(--hum)')}</div>${Object.entries(rr).map(([k,v])=>`<div class="hbar" style="grid-template-columns:1fr 40px"><span>${esc(REASONS[k]||k)}</span><span class="mono">${v}</span></div>`).join('')||'<div class="sub">No rejection reasons recorded yet.</div>'}</div>
+   <div class="card"><h3>What this prototype does not claim</h3><ul class="sub" style="margin:0;padding-left:18px"><li>That any promo will convert, retain or go viral.</li><li>That the rules detect every spoiler (the registry only knows patterns in the script).</li><li>That "better than random" has been shown — the blind test is small and AI-rated.</li><li>That 20–60 s is optimal; it's the brief's constraint.</li></ul></div></div>
+  <div class="card" style="margin-top:14px"><h3>Failure analysis</h3><table><tr><th>Status</th><th>Failure</th><th>Evidence</th><th>Mitigation / next step</th></tr>${fl.map(f=>`<tr><td><span class="chip ${f.status==='fixed'?'ok':'warn'}">${esc(f.status)}</span></td><td><b>${esc(f.title)}</b></td><td class="sub">${esc(f.evidence)}</td><td class="sub">${esc(f.fix)}</td></tr>`).join('')}</table></div>`; }
+
+/* ---------- Studio: weight lab + phone preview + cold-viewer replay + keyboard review ---------- */
+const WK=[['hook','hook','Hook'],['cliff','cliff','Cliffhanger'],['standalone','standalone','Standalone'],['arc','arc','Arc'],['pace','pace','Pace'],['duration','duration_fit','Duration']];
+const W0=D.meta.config.weights, ENN=D.engines.map(e=>typeof e==='string'?e:(e.name||e.engine||e.label||String(e)));
+const STU={w:Object.assign({},W0),id:null,t:0,t0:0,t1:1,playing:false,sp:1,lo:0,hi:0,lines:[],vc:-1,raf:0,last:0,dur:0};
+const stuScore=(p,w)=>{const tot=WK.reduce((a,[k])=>a+w[k],0)||1;return WK.reduce((a,[k,s])=>a+w[k]*p.scores[s],0)/tot*(p.raw_score?p.score/p.raw_score:1)};
+const stuOrder=w=>P.map(p=>({p,s:stuScore(p,w)})).sort((a,b)=>b.s-a.s||a.p.rank-b.p.rank);
+const STU0=stuOrder(W0), base0=Object.fromEntries(STU0.map((o,i)=>[o.p.id,i+1]));
+function stuParse(p){const out=[],segs=p.segments;let si=-1,base=0;(p.transcript||'').split('\n').forEach(l=>{if(/^--- Episode/.test(l)){si++;if(si>0)base+=segs[si-1].end_s-segs[si-1].start_s;return}const m=/^\[(\d+:\d+(?:\.\d+)?)\]\s*(.*)$/.exec(l);if(!m||si<0)return;let tx=m[2],who='',act=false;if(/^\[action\]/i.test(tx)){act=true;tx=tx.replace(/^\[action\]\s*/i,'')}else{const k=/^([^:(]+?)(?:\s*\([^)]*\))?:\s*(.*)$/.exec(tx);if(k){who=k[1].trim();tx=k[2]}}out.push({t:base+toSec(m[1])-segs[si].start_s,who,tx,act,si})});return out}
+function stuLoad(id,keep){const p=byId[id];STU.id=id;STU.lines=stuParse(p);STU.dur=p.duration_s;if(!keep){STU.lo=0;STU.hi=Math.max(0,STU.lines.length-1)}stuRange();STU.t=STU.t0;STU.playing=false;cancelAnimationFrame(STU.raf);STU.vc=-1;stuPhone();stuPaint();$$('.rr').forEach(r=>r.classList.toggle('sel',r.dataset.id===id))}
+function stuRange(){const L=STU.lines,n=L.length;STU.t0=n?L[STU.lo].t:0;STU.t1=n?(STU.hi<n-1?L[STU.hi+1].t:STU.dur):1}
+function stuPhone(){const p=byId[STU.id],L=STU.lines,len=STU.t1-STU.t0,ok=len>=20&&len<=60,cv=p.cold_viewer;
+$('#stuPhone').innerHTML=`<div class="phonewrap"><div><div class="phone"><div class="scr" id="stuScr"></div><div class="pb"><u style="left:0;width:${Math.min(100,3/len*100)}%"></u><u style="right:0;width:${Math.min(100,4/len*100)}%;background:var(--bad)"></u><i id="stuBar"></i></div></div>
+<div class="ctl"><button class="btn pri" id="stuPlay">▶ Play</button><button class="btn" id="stuSp">1×</button><button class="btn" onclick="quick(STU.id,'approved')">✓ Approve <span class=kbd>A</span></button><button class="btn" onclick="quick(STU.id,'rejected')">✕ Reject <span class=kbd>R</span></button></div></div>
+<div class="know"><h4>${esc(p.id)} · <span class="mono" id="stuTime"></span></h4><div class="mono" style="color:var(--mut);margin-bottom:8px">${esc(segTxt(p))}</div>
+<h4>What a stranger knows (replay)</h4><div id="stuKnow"></div>
+${Object.entries(cv.dims).map(([k,v])=>mini(k,v,v<.6?'var(--warn)':'var(--ver)')).join('')}
+${(cv.gaps||[]).map(g=>`<div class="gap">⚠ ${esc(typeof g==='string'?g:(g.text||g.type||JSON.stringify(g)))}</div>`).join('')||'<div class="mono" style="color:var(--ok);margin-top:4px">no context gaps flagged</div>'}
+<div class="mono" style="color:var(--dim);margin-top:6px">Rule-based estimate (not audience data).</div>
+<h4 style="margin-top:12px">Trim to line boundaries</h4>
+<div class="wrow"><span>start line</span><input type=range id="stuLo" min=0 max=${Math.max(0,L.length-1)} value=${STU.lo}><span class=mono>${STU.lo+1}</span></div>
+<div class="wrow"><span>end line</span><input type=range id="stuHi" min=0 max=${Math.max(0,L.length-1)} value=${STU.hi}><span class=mono>${STU.hi+1}</span></div>
+<span class="chip ${ok?'ok':'bad'}">${len.toFixed(1)} s · ${ok?'within 20–60 s':'outside 20–60 s'}</span>
+<div class="mono" style="color:var(--dim);margin-top:6px">Exploratory: cuts snap to spoken lines but are not re-validated or scored; re-run the CLI validator before use.</div></div></div>`;
+$('#stuPlay').onclick=stuToggle;$('#stuSp').onclick=()=>{STU.sp=STU.sp===1?1.5:STU.sp===1.5?2:.5*(STU.sp===2?2:1);$('#stuSp').textContent=STU.sp+'×'};
+const tr=()=>{STU.lo=Math.min(+$('#stuLo').value,+$('#stuHi').value);STU.hi=Math.max(+$('#stuLo').value,+$('#stuHi').value);stuLoad(STU.id,true)};$('#stuLo').onchange=tr;$('#stuHi').onchange=tr;$('#stuLo').oninput=()=>{$$('#stuLo~span')};}
+function stuPaint(){const p=byId[STU.id],L=STU.lines,c=STU.t,len=STU.t1-STU.t0;const vis=[];L.forEach((l,i)=>{if(i>=STU.lo&&i<=STU.hi&&l.t<=c+.001)vis.push(l)});
+if(vis.length!==STU.vc){STU.vc=vis.length;const sh=vis.slice(-4);let h='';sh.forEach((l,i)=>{const prev=sh[i-1];if(prev&&prev.si!==l.si)h+='<div class="cut">✂ CUT</div>';h+=`<div class="ln ${l.act?'act':''} ${i===sh.length-1?'new':''}">${l.who?`<b>${esc(l.who)}</b>`:''}${esc(l.tx)}</div>`});
+const el=c-STU.t0,badge=el<=3?'<div class="badge">HOOK · first 3 s</div>':(STU.t1-c<=4?'<div class="badge cl">CLIFFHANGER</div>':'');
+const end=c>=STU.t1-.01&&STU.playing===false&&c>STU.t0?`<div class="end"><big>To be continued…</big><span class="mono" style="color:#c9c8d6">${esc(p.landing||'')}</span></div>`:'';$('#stuScr').innerHTML=badge+h+end;
+$('#stuKnow').innerHTML=[...new Set(vis.filter(l=>l.who).map(l=>l.who))].map(w=>`<span class="kc">${esc(w)}</span>`).join('')||'<span class="mono" style="color:var(--dim)">nobody has spoken yet</span>'}
+$('#stuBar').style.width=Math.min(100,Math.max(0,(c-STU.t0)/len*100))+'%';$('#stuTime').textContent=`${Math.max(0,c-STU.t0).toFixed(1)} / ${len.toFixed(1)} s`;$('#stuPlay').textContent=STU.playing?'❚❚ Pause':'▶ Play'}
+function stuTick(ts){if(!STU.playing)return;STU.t+=(ts-STU.last)/1000*STU.sp;STU.last=ts;if(STU.t>=STU.t1){STU.t=STU.t1;STU.playing=false;STU.vc=-1}stuPaint();if(STU.playing)STU.raf=requestAnimationFrame(stuTick)}
+function stuToggle(){if(STU.playing){STU.playing=false;stuPaint();return}if(STU.t>=STU.t1-.01){STU.t=STU.t0;STU.vc=-1}STU.playing=true;STU.last=performance.now();STU.raf=requestAnimationFrame(stuTick)}
+function stuList(first){const o=stuOrder(STU.w).slice(0,14),slate=slateIds(),top0=new Set(STU0.slice(0,10).map(x=>x.p.id)),top1=new Set(o.slice(0,10).map(x=>x.p.id));
+const inter=[...top1].filter(x=>top0.has(x)).length,N=Math.min(10,P.length),jac=inter/(2*N-inter);const L=$('#stuRL');L.style.height=o.length*46+'px';
+const rows=Object.fromEntries($$('.rr',L).map(r=>[r.dataset.id,r]));$$('.rr',L).forEach(r=>{if(!o.find(x=>x.p.id===r.dataset.id))r.remove()});
+o.forEach((x,i)=>{const p=x.p;let r=rows[p.id];if(!r){r=document.createElement('div');r.className='rr';r.dataset.id=p.id;r.onclick=()=>stuLoad(p.id);L.appendChild(r);r.style.transform=`translateY(${i*46}px)`}
+const dlt=base0[p.id]-(i+1);r.innerHTML=`<b>#${i+1}</b><span class="d ${dlt>0?'up':dlt<0?'dn':'eq'}">${dlt>0?'▲'+dlt:dlt<0?'▼'+-dlt:'•'}</span><span class="nm"><i class="dot" style="background:${col(p.engine)}"></i>${esc(p.id)} · ${esc(p.engine)}${slate.includes(p.id)?' ★':''}${p.campaign.eligible?'':' 🛡'}</span>${bar(x.s,col(p.engine))}<span class="mono">${f2(x.s)}</span>`;r.classList.toggle('sel',p.id===STU.id);r.style.transform=`translateY(${i*46}px)`});
+$('#stuStat').innerHTML=`Top-10 overlap with default weights: <b>${inter}/${N}</b> (Jaccard ${f2(jac)}) · ${N-inter?`${N-inter} promo(s) moved in/out`:'no change'} · 🛡 = blocked for spoilers · ★ = in slate`;
+return o}
+function renderStudio(){const t=$('#t-studio'),slate=slateIds(),naive=P.slice().sort((a,b)=>a.rank-b.rank).slice(0,10),cnt=ids=>{const c={};ids.forEach(i=>{const e=byId[i].engine;c[e]=(c[e]||0)+1});return c};
+const cn=cnt(naive.map(p=>p.id)),cs=cnt(slate);const covRow=(l,c)=>`<div class="cov"><span>${l}</span>${ENN.map(e=>`<i title="${esc(e)}: ${c[e]||0}" style="${c[e]?`background:${col(e)};opacity:${.45+Math.min(.55,c[e]*.2)};border-color:${col(e)}`:''}"></i>`).join('')}</div>`;
+t.innerHTML=`<div class="wrap" style="padding-top:18px"><div style="margin-bottom:12px"><h2>Studio</h2><div style="color:var(--mut)">Stress-test the ranking, watch a promo as a stranger would, and review at keyboard speed.</div></div>
+<div class="stu-g"><div class="stu-card"><h3>Weight lab — live re-ranking</h3><p class="sub">Drag any weight. Spoiler, curiosity and AI adjustments stay fixed. Rows slide to their new rank; ▲▼ show movement against the shipped weights.</p>
+${WK.map(([k,,l])=>`<div class="wrow"><span>${l}</span><input type="range" min="0" max="0.5" step="0.01" value="${STU.w[k]}" data-k="${k}"><span class="mono" id="wv-${k}">${f2(STU.w[k])}</span></div>`).join('')}
+<div style="display:flex;gap:8px;align-items:center;margin-top:8px"><button class="btn" id="stuReset">Reset weights</button><span class="mono" id="stuStat" style="color:var(--mut)"></span></div><div class="rl" id="stuRL"></div>
+<h3 style="margin-top:18px;font-size:15px">Why the slate beats a naive top-10</h3><p class="sub">Emotional-engine coverage (colour = engine present).</p>${covRow('naive top-10',cn)}${covRow('slate',cs)}<div class="mono" style="color:var(--mut)">${Object.keys(cn).length}/9 engines vs ${Object.keys(cs).length}/9</div></div>
+<div class="stu-card"><h3>Promo preview · cold-viewer replay</h3><p class="sub">Script played as a 9:16 clip: hook window (orange) and cliffhanger window (red) on the bar. No video exists, so this is a script simulation.</p><div id="stuPhone"></div>
+<div class="mono" style="color:var(--mut);margin-top:10px"><span class=kbd>←</span> <span class=kbd>→</span> change promo · <span class=kbd>Space</span> play · <span class=kbd>A</span> approve · <span class=kbd>R</span> reject</div></div></div></div>`;
+$$('input[data-k]',t).forEach(i=>i.oninput=()=>{STU.w[i.dataset.k]=+i.value;$('#wv-'+i.dataset.k).textContent=f2(+i.value);stuList()});$('#stuReset').onclick=()=>{STU.w=Object.assign({},W0);renderStudio()};
+const o=stuList();stuLoad(STU.id&&byId[STU.id]?STU.id:(slate[0]||o[0].p.id));}
+function stuNav(d){const o=stuOrder(STU.w).slice(0,14).map(x=>x.p.id),i=Math.max(0,o.indexOf(STU.id)),n=o[(i+d+o.length)%o.length];stuLoad(n)}
+document.addEventListener('keydown',e=>{if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)&&e.target.type!=='range')return;const k=e.key.toLowerCase();
+if($('#drawer').classList.contains('on')){const f=filtered().map(p=>p.id),i=f.indexOf(state.sel);if(k==='j'||k==='k'){const n=f[i+(k==='j'?1:-1)];if(n)openDrawer(n)}else if(k==='a'){quick(state.sel,'approved')}else if(k==='r'){quick(state.sel,'rejected')}return}
+if(state.tab!=='studio')return;if(k==='arrowright'){stuNav(1)}else if(k==='arrowleft'){stuNav(-1)}else if(k===' '){e.preventDefault();stuToggle()}else if(k==='a'){quick(STU.id,'approved')}else if(k==='r'){quick(STU.id,'rejected')}});
+/* first-visit tour */
+function tour(){try{if(localStorage.getItem('pd-tour'))return}catch(e){}const S=[['Studio','Open the Studio tab: drag the weight sliders and watch the ranking re-sort live.'],['Preview','Click any ranked promo to watch it as a 9:16 clip. See the hook window, the cliffhanger window and what a stranger knows.'],['Review fast','Press A / R to approve or reject, ←/→ to move, J/K inside a promo drawer. Decisions export from Campaign builder.']];let i=0;const d=document.createElement('div');d.className='tour';document.body.appendChild(d);const draw=()=>{d.innerHTML=`<p><b>${S[i][0]}</b> (${i+1}/3) — ${S[i][1]}</p><div class="r"><button class="btn" id="tx">Skip</button><button class="btn pri" id="tn">${i<2?'Next':'Got it'}</button></div>`;$('#tx').onclick=end;$('#tn').onclick=()=>{i<2?(i++,draw()):end()}};const end=()=>{d.remove();try{localStorage.setItem('pd-tour','1')}catch(e){}};draw()}
+
+/* ---------- shell ---------- */
+const R = {studio:renderStudio, overview:renderOverview, library:renderLibrary, campaign:renderCampaign, compare:renderCompare, story:renderStory, eval:renderEval};
+function go(t){ state.tab=t; $$('section.tab').forEach(s=>s.classList.toggle('on', s.id==='t-'+t)); $$('#nav button').forEach(b=>b.classList.toggle('on', b.dataset.t===t)); R[t](); window.scrollTo(0,0); try{history.replaceState(null,'','#'+t);}catch(e){} }
+function rerender(){ R[state.tab](); if($('#drawer').classList.contains('on')) drawer(); }
+$('#showname').textContent = D.meta.show; $('#nav').innerHTML = TABS.map(([k,l])=>`<button data-t="${k}">${l}</button>`).join(''); $$('#nav button').forEach(b=>b.onclick=()=>go(b.dataset.t));
+$('#scrim').onclick = closeDrawer; document.addEventListener('keydown', e => { if(e.key==='Escape') closeDrawer(); });
+$('#theme').onclick = () => { const h=document.documentElement; h.dataset.theme = h.dataset.theme==='dark'?'light':'dark'; try{localStorage.setItem('promo-desk-theme',h.dataset.theme);}catch(e){} };
+try { const th = localStorage.getItem('promo-desk-theme'); if (th) document.documentElement.dataset.theme = th; else if (window.matchMedia && matchMedia('(prefers-color-scheme: light)').matches) document.documentElement.dataset.theme='light'; } catch(e) {}
+setTimeout(tour,600);
+go((location.hash||'#overview').slice(1) in R ? (location.hash||'#overview').slice(1) : 'overview');
+</script></body></html>

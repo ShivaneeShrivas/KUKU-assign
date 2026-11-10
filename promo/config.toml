@@ -1,0 +1,47 @@
+# All knobs in one place. Everything here is a judgment call you can defend or change.
+[duration]
+min = 20.0          # hard rule from the brief
+max = 60.0          # hard rule from the brief
+sweet_lo = 26.0     # research: most drama ads run 20-40s, DramaBox tests 46-64s -> soft preference band
+sweet_hi = 48.0
+
+[weights]           # transparent rubric (sums to 1)
+hook = 0.22
+cliff = 0.25
+standalone = 0.24     # cold-viewer understanding + context debt
+arc = 0.18            # hook -> context -> escalation -> unresolved ending, weakest-link
+pace = 0.06
+duration = 0.05
+
+[grades]            # quality grade is a pure function of the final score (so it can never disagree with rank)
+A = 0.78
+B = 0.66
+
+[select]
+top_k_starts = 18
+top_k_ends = 18
+per_episode = 2
+min_score = 0.52
+max_overlap = 0.25
+
+
+[setup]             # cross-segment "context repair"
+enabled = true
+max_len = 9.0
+min_debt = 0.20
+min_gain = 0.02
+
+[llm]               # optional judge stage; any OpenAI-compatible endpoint
+base_url = "https://generativelanguage.googleapis.com/v1beta/openai"
+model = "gemini-2.0-flash"
+api_key_env = "PROMO_LLM_API_KEY"
+shortlist = 40
+blend = 0.40        # final = (1-blend)*engine + blend*llm
+
+[portfolio]          # campaign release priority (distinct from quality rank)
+slate_size = 10
+block_levels = ["critical", "high"]   # spoiler levels that make a promo ineligible for the recommended slate (editor can override)
+lambda_similarity = 0.55
+new_engine_bonus = 0.05
+episode_spread_bonus = 0.02
+min_episode_gap = 3

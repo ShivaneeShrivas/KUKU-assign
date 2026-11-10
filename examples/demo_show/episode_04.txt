@@ -1,0 +1,30 @@
+EPISODE NUMBER: Episode 4
+EPISODE LOGLINE: Voss takes Mara to a hidden truth.
+CONTINUITY NOTES: Invented demo show, not Kuku content.
+SCRIPT START
+SCENE 1
+Scene heading: INT. BLACK CAR - NIGHT
+Scene start: 00:00.0
+**ACTION:**
+Start: (00:00.0) | End: (00:04.0)
+Mara hesitates, then climbs in. Voss locks the doors.
+
+**VOSS (soft):**
+Start: (00:04.0) | End: (00:09.0)
+Good choice. Now we drive to see the one person who can clear your name.
+
+**MARA (suspicious):**
+Start: (00:09.0) | End: (00:12.0)
+Who is that?
+
+**VOSS (flat):**
+Start: (00:12.0) | End: (00:16.0)
+Your mother. She has been alive the whole time.
+
+**ACTION:**
+Start: (00:16.0) | End: (00:20.0)
+Mara stares at him. The car turns toward the bridge.
+
+Scene end: 00:20.0
+
+SCRIPT END

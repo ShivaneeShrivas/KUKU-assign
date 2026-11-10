@@ -1,0 +1,34 @@
+EPISODE NUMBER: Episode 1
+EPISODE LOGLINE: Mara finds her boss's secret books.
+CONTINUITY NOTES: Invented demo show, not Kuku content.
+SCRIPT START
+SCENE 1
+Scene heading: INT. HARBOR OFFICE - NIGHT
+Scene start: 00:00.0
+**ACTION:**
+Start: (00:00.0) | End: (00:05.0)
+Mara, a harbor accountant, finds a second set of books in a locked drawer.
+
+**MARA (whispering):**
+Start: (00:05.0) | End: (00:10.0)
+Forty thousand missing, and every page signed by my own boss.
+
+**ACTION:**
+Start: (00:10.0) | End: (00:14.0)
+The door opens. Director Voss stands there, calm.
+
+**VOSS (cold):**
+Start: (00:14.0) | End: (00:18.0)
+You were never supposed to open that drawer, Mara.
+
+**MARA (shaking):**
+Start: (00:18.0) | End: (00:22.0)
+Who else knows about the money?
+
+**VOSS (smiling):**
+Start: (00:22.0) | End: (00:26.0)
+Only the person who is about to take the blame.
+
+Scene end: 00:26.0
+
+SCRIPT END
